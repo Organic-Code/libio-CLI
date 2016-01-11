@@ -52,15 +52,14 @@ typedef struct{
  */
 typedef struct{
 	io_Coordinates current_position;
-	io_Coordinates ld_start_coo;
-	io_Coordinates ld_end_coo;
+	io_Coordinates drawing_start_coo;
+	io_Coordinates drawing_end_coo;
 	unsigned short x_size;
 	unsigned short y_size;
 	char* char_table;
 	char* txt_color;
 	char* bg_color;
 	BOOL draw_spaces;
-	BOOL ld_complete;
 }io_Sprite_Struct;
 
 typedef io_Sprite_Struct* io_Sprite;
@@ -150,12 +149,28 @@ BOOL io_clearSprite(io_Sprite sprite);
 
 /* TODO */
 /*
- * Clears the sprite from the screen and moves it to the given location
+ * Clears the sprite from the screen and reprints it to the given location
  * @param sprite     Sprite to move
  * @param Coordinates Coordinates of where to move the sprite
+ */
+void io_moveSpriteTo(io_Sprite sprite, io_Coordinates coordinates);
+
+/* TODO */
+/*
+ * Clears the sprite from the screen and reprints to a position relative to its previous location.
+ * @param sprite The conserned sprite
+ * @param x      Horizontal movement of the sprite. May be negative.
+ * @param y      Vertical movement of the sprite. May be negative.
+ */
+void io_moveSpriteRelativ(io_Sprite sprite, int x, int y);
+
+/* TODO */
+/*
+ * Prints a sprite at the center of the screen. If the screen is too small, the sprite will be cutted.
+ * @param sprite Sprite to draw
  * @return       TRUE on success, FALSE otherwise
  */
-BOOL io_moveSpriteTo(io_Sprite sprite, io_Coordinates coordinates);
+BOOL io_centerPrintSprite(io_Sprite sprite);
 
 /* Clears the screen */
 void io_clear(void);
@@ -230,34 +245,47 @@ char io_instantGetChar(void);
 unsigned long int io_getNumberWithinRange(unsigned long int min, unsigned long int max);
 /* inner functions */
 
-/* TODO */
 /*
  * Sets a new io_Sprite.
  * @param x_len      Number of characters per line
  * @param y_len      Number of lines in the sprite
  * @param char_table Set of characters that can be drawn by sprite's functions. No '\0' are required (address will be used).
- * @param txt_color  Color used for the text (address will be used).
- * @param bg_color   Color used for the background (address will be used).
+ * @param txt_color  Color used for the text (address will be used) if txt_color is set to NULL, color won't be changed to print the sprite.
+ * @param bg_color   Color used for the background (address will be used) if bg_color is set to NULL, color won't be changed to print the sprite.
  * @return           The created sprite.
  */
 io_Sprite io_newSprite(unsigned short x_len, unsigned short y_len, char* char_table, char* txt_colors, char* bg_color);
 
-/* TODO */
+/*
+ * Deletes an io_Sprite
+ * @param sprite Concerned sprite
+ * @return       NULL
+ */
+io_Sprite io_deletSprite(io_Sprite sprite);
+
 /*
  * Sets wether you want to print the spaces within a sprite or not
  * Default behavior is to not print spaces.
  * @param sprite      Sprite to set
  * @param print_space TRUE to print spaces, FALSE otherwise
+ * @return            The sprite
  */
-void io_printSpaces(io_Sprite sprite, BOOL print_space);
+io_Sprite io_printSpaces(io_Sprite sprite, BOOL print_spaces);
 
-/* TODO */
+/*
+ * Changes the sprite's color
+ * @param sprite    Sprite to edit
+ * @param txt_color Color used for the text (address will be used). If txt_color is set to NULL, color won't be changed to print the sprite.
+ * @param bg_color  Color used for the background (address will be used). If bg_color is set to NULL, color won't be changed to print the sprite.
+ * @return          The sprite
+ */
+io_Sprite io_changeSpriteColor(io_Sprite sprite, char* txt_color, char* bg_color);
+
 /*
  * Sets the cursor visibility
  * @param visibility TRUE to display the cursor, FALSE to hide.
- * @return           TRUE on success, false otherwise.
  */
-BOOL io_visibleCursor(BOOL visibility);
+void io_visibleCursor(BOOL visible);
 
 /* TODO */
 /*
@@ -268,9 +296,8 @@ BOOL io_visibleCursor(BOOL visibility);
  */
 BOOL io_setConsoleSize(unsigned short x, unsigned short y);
 
-/* TODO */
 /*
- * Sets to draw a part of a sprite. ie, given the sprite
+ * Sets to draw a part of a sprite. ie, given the sprite. Doesn't actually print it
  * "#--#"
  * "|  |"
  * "#--#"
@@ -278,12 +305,21 @@ BOOL io_setConsoleSize(unsigned short x, unsigned short y);
  * "  |"
  * "--#"
  *
- * @param sprite
+ * @param sprite      Sprite to set
  * @param drawing_beg Where to start the drawing (within the table of characters. each coordinate must be greater or equal to 0, and smaller or equal to the sprite's x&y size)
  * @param drawing_end Where to end the drawing (x and y coordinates must be each greater or equal to beg_draw's x and y — and smaller or equal to the sprite's x&y size)
- * @retun             TRUE if coordinates where alright, false otherwise.
+ * @retun             The sprite
  */
-BOOL io_usePartOfSprite(io_Sprite sprite, io_Coordinates drawing_beg, io_Coordinates drawing_end);
+io_Sprite io_usePartOfSprite(io_Sprite sprite, io_Coordinates drawing_beg, io_Coordinates drawing_end);
+
+/*
+ * Does the same than io_usePartOfSprite, but clears the sprite first
+ * @param sprite      Sprite to set
+ * @param drawing_beg Where to start the drawing (within the table of characters)
+ * @param drawing_end Where to end the drawing (within the table of characters)
+ * @return            The sprite
+ */
+io_Sprite io_clearAndUsePart(io_Sprite sprite, io_Coordinates drawing_beg, io_Coordinates drawing_end);
 
 /*
  * Retrieve the height of the terminal
