@@ -10,4 +10,7 @@ typedef struct{
 	unsigned short y; /*!< Row of the character */
 }io_Coordinates;
 
+io_Coordinates io_setCoordinates(unsigned short x, unsigned short y);
+io_Coordinates io_setCoordinates(unsigned short x, unsigned short y){ io_Coordinates a; a.x = x; a.y = y; return a; }
+
 #endif /* IO_COORDINATES_STRUCT_H_INCLUDED */

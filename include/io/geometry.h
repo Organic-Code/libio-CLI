@@ -28,8 +28,9 @@
 #include <io/bool.h>
 #include <stdio.h>
 #include <io/coordinates_struct.h>
+#include <io/cursor.h>
+#include <math.h>
 
-/* TODO */
 /**
  * @brief Draws a filled rectangle
  * @param beg       Coordinates of the rectangle's beginning
@@ -38,7 +39,6 @@
  */
 void io_drawFilledRectangle(io_Coordinates beg, io_Coordinates end, char draw_char);
 
-/* TODO */
 /**
  * @brief Draws an empty rectangle
  * @param beg       Coordinates of the rectangle's beginning
@@ -47,7 +47,7 @@ void io_drawFilledRectangle(io_Coordinates beg, io_Coordinates end, char draw_ch
  */
 void io_drawRectangle(io_Coordinates beg, io_Coordinates end, char draw_char);
 
-/* TODO */
+/* FIXME */
 /**
  * @brief Draws a line
  * @param beg       Coordinates of the line's beginning
@@ -56,7 +56,14 @@ void io_drawRectangle(io_Coordinates beg, io_Coordinates end, char draw_char);
  */
 void io_drawLine(io_Coordinates beg, io_Coordinates end, char draw_char);
 
-/* TODO */
+/**
+ * @brief Draws a vertical line
+ * @param beg       Coordinate of an extremity of the line
+ * @param height    Height of the line
+ * @param draw_char Char to be drawn
+ */
+void io_drawVerticalLine(io_Coordinates beg, unsigned short height, char draw_char);
+
 /**
  * @brief Draws a doted line
  * @param beg       Coordinates of the line's beginning
@@ -65,7 +72,6 @@ void io_drawLine(io_Coordinates beg, io_Coordinates end, char draw_char);
  */
 void io_drawDotedLine(io_Coordinates beg, io_Coordinates end, char draw_char);
 
-/* TODO */
 /**
  * @brief Prints a circle at the specified coordinates and with the specified char
  * @param center    Coordinates of the center of the circle.
@@ -74,15 +80,14 @@ void io_drawDotedLine(io_Coordinates beg, io_Coordinates end, char draw_char);
  */
 void io_drawCircle(io_Coordinates center, unsigned short radius, char draw_char);
 
-/* TODO */
+/* FIXME */
 /**
  * @brief Draws a circle arch (clockwise)
  * @param center              Coordinates of the center of the arch
  * @param first_point_of_arch Coordinates of the first point of the arch
  * @param last_point_of_arch  Coordinates of the last point of the arch
  * @param draw_char           Character to draw
- * @return                    TRUE if successful, FALSE otherwise
  */
-IO_BOOL io_drawArch(io_Coordinates center, io_Coordinates first_point_of_arch, io_Coordinates last_point_of_arch, char draw_char);
+void io_drawArch(io_Coordinates center, io_Coordinates first_point_of_arch, io_Coordinates last_point_of_arch, char draw_char);
 
 #endif /* IO_GEOMETRY_H_INCLUDED */
