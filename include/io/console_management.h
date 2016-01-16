@@ -25,6 +25,17 @@
 #ifndef IO_CONSOLE_MANAGEMENT_H_INCLUDED
 #define IO_CONSOLE_MANAGEMENT_H_INCLUDED
 
+/**
+ * @file io/console_management.h
+ * @brief Introduces functions associated to the
+ * management of the console.
+ *
+ * @author Lucas LAZARE
+ *
+ * Header file for changing text printing settings,
+ * cursor settings, getting terminal state, ...
+ */
+
 #include <io/bool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -53,7 +64,7 @@ void io_setTextColor(const char* color);
 
 /**
  * @brief Sets the cursor visibility
- * @param visibility TRUE to display the cursor, FALSE to hide.
+ * @param visible TRUE to display the cursor, FALSE to hide.
  */
 void io_visibleCursor(IO_BOOL visible);
 

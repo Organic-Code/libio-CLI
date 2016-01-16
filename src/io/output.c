@@ -110,12 +110,6 @@ unsigned char io_menu(const char* choices, const char* title, unsigned char choi
 		max_length = j;
 	}
 
-	if (term_height < (nb_choices + 3) || term_width < (max_length + 3))
-	{
-		printf("Your screen is too small to have a nice display.\n");
-		return 255;
-	} /*else*/
-
 	x_text = (unsigned short*) calloc(nb_choices, sizeof(unsigned short));
 	y_text = (unsigned short*) calloc(nb_choices, sizeof(unsigned short));
 	x_box = (unsigned short)(term_width - max_length - 2) / 2;

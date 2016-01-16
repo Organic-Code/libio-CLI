@@ -25,6 +25,14 @@
 #ifndef IO_INPUT_H_INCLUDED
 #define IO_INPUT_H_INCLUDED
 
+/**
+ * @file io/input.h
+ * @brief Introduces functions used to retrieve
+ * inputs from the user.
+ *
+ * @author Lucas LAZARE
+ */
+
 #include <io/bool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -33,16 +41,17 @@
 
 /**
  * @brief Retrieves a user answer to a yes/no question
- * @param question The quetion adressed to the user
- * @param default  1 for Yes as default, -1 for No as default, any other for no default.
- * @return True if user inputed yes, False otherwise
+ * @param question     The quetion adressed to the user
+ * @param default_ans  1 for Yes as default, -1 for No as default, any other for no default.
+ * @return             True if user inputed yes, False otherwise
  */
 IO_BOOL io_yes(char* question, char default_ans);
 
 /**
  * @brief Retrieves a number inputed in base i_base
- * @param i_base       input base
- * @return             the inputed number
+ * @param i_base        input base
+ * @param with_brackets TRUE to display the input between brackets, FALSE otherwise
+ * @return              the inputed number
  */
 char* io_getNumber(unsigned char i_base, IO_BOOL with_brackets);
 

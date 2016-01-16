@@ -1,6 +1,12 @@
 #ifndef IO_ALL_H_INCLUDED
 #define IO_ALL_H_INCLUDED
 
+/**
+ * @file io/all.h
+ * @author Lucas LAZARE
+ * @brief Header including all the libio headers
+ */
+
 #include <io/bool.h>
 #include <io/console_management.h>
 #include <io/coordinates_struct.h>

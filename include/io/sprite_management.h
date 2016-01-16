@@ -25,6 +25,16 @@
 #ifndef IO_SPRITE_MANAGEMENT_H_INCLUDED
 #define IO_SPRITE_MANAGEMENT_H_INCLUDED
 
+
+
+/**
+ * @file io/console_management.h
+ * @brief Introduces functions related to the
+ * management of an io_Sprite structure
+ *
+ * @author Lucas LAZARE
+ */
+
 #include <io/bool.h>
 #include <stdlib.h>
 #include <io/sprite_struct.h>

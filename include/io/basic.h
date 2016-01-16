@@ -1,6 +1,12 @@
 #ifndef BASIC_H_INCLUDED
 #define BASIC_H_INCLUDED
 
+/**
+ * @file io/basic.h
+ * @author Lucas LAZARE
+ * @brief Header including basics header of libio.
+ */
+
 #include <io/bool.h>
 #include <io/coordinates_struct.h>
 #include <io/console_management.h>

@@ -24,6 +24,12 @@
 
 #ifndef IO_CURSOR_H_INCLUDED
 #define IO_CURSOR_H_INCLUDED
+/**
+ * @file io/cursor.h
+ * @brief Introduces functions related to cursor management.
+ *
+ * @author Lucas LAZARE
+ */
 
 #include <stdio.h>
 

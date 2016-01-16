@@ -79,12 +79,12 @@ void basic_sample(){
 		key = toupper(io_instantGetChar());
 		switch (key){
 		case 'W':
-			if (text.y > 1) {
+			if (text.y > 0) {
 				--text.y;
 			}
 			break;
 		case 'A':
-			if (text.x > 1) {
+			if (text.x > 0) {
 				--text.x;
 			}
 			break;
@@ -94,7 +94,7 @@ void basic_sample(){
 			}
 			break;
 		case 'D':
-			if (text.x < io_consoleWidth() - 54) {
+			if (text.x < io_consoleWidth() - 53) {
 				++text.x;
 			}
 			break;
@@ -167,6 +167,7 @@ void geometry_sample(){
 	io_drawCircle(coo, 8, ' ');
 
 	io_setEcho(IO_TRUE);
-	(void)io_instantGetChar();
+	if (io_instantGetChar() == IO_SPECIAL_CHAR)
+		(void)io_instantGetChar();
 	io_visibleCursor(IO_TRUE);
 }

@@ -25,6 +25,14 @@
 #ifndef IO_SPRITE_DISPLAY_H_INCLUDED
 #define IO_SPRITE_DISPLAY_H_INCLUDED
 
+/**
+ * @file io/sprite_display.h
+ * @brief Intruduces functions related to the
+ * printing of 'sprites' at the screen
+ *
+ * @author Lucas LAZARE
+ */
+
 #include <io/bool.h>
 #include <stdio.h>
 #include <io/sprite_struct.h>
@@ -41,7 +49,7 @@ IO_BOOL io_printSprite(io_Sprite* sprite);
 /**
  * @brief Draws a Sprite at the specified coordinates
  * @param sprite     Sprite to draw
- * @param Coordinates Coordinates where to draw the sprite
+ * @param coordinates Coordinates where to draw the sprite
  * @return       TRUE on success, FALSE otherwise
  */
 IO_BOOL io_printSpriteAt(io_Sprite* sprite, io_Coordinates coordinates);
@@ -58,7 +66,7 @@ IO_BOOL io_clearSprite(io_Sprite* sprite);
 /**
  * @brief Clears the sprite from the screen and reprints it to the given location
  * @param sprite     Sprite to move
- * @param Coordinates Coordinates of where to move the sprite
+ * @param coordinates Coordinates of where to move the sprite
  */
 void io_moveSpriteTo(io_Sprite* sprite, io_Coordinates coordinates);
 

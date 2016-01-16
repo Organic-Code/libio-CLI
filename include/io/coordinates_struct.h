@@ -27,6 +27,13 @@
 #define IO_COORDINATES_STRUCT_H_INCLUDED
 
 /**
+ * @file io/coordinates_struct.h
+ * @brief Introduces functions and structures associated to io_Coordinates.
+ *
+ * @author Lucas LAZARE
+ */
+
+/**
  * @struct io_Coordinates
  * @brief A structure defining a character's coordinates
  */
@@ -35,6 +42,11 @@ typedef struct{
 	unsigned short y; /*!< Row of the character */
 }io_Coordinates;
 
+/**
+ * @brief Returns an io_Coordinates according to the inputed parameters
+ * @param x Row
+ * @param y Column
+ * @return  The generated io_Coordinates
 io_Coordinates io_setCoordinates(unsigned short x, unsigned short y);
 
 #endif /* IO_COORDINATES_STRUCT_H_INCLUDED */

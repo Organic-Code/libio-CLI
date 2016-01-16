@@ -25,9 +25,21 @@
 #ifndef IO_OUTPUT_H_INCLUDED
 #define IO_OUTPUT_H_INCLUDED
 
+/**
+ * @file io/output.h
+ * @brief Declares functions related to the
+ * priting of elements on the terminal.
+ *
+ * @author Lucas LAZARE
+ */
+
+/*! code corresponding to ESC */
 #define IO_SPECIAL_CHAR 0x001B
+/*! io_menu(...) : align to the left */
 #define IO_LEFT 0
+/*! io_menu(...) : center */
 #define IO_CENTER 1
+/*! io_menu(...) : align to the right */
 #define IO_RIGHT 2
 
 #include <stdio.h>

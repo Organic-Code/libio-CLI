@@ -25,6 +25,14 @@
 #ifndef IO_GEOMETRY_H_INCLUDED
 #define IO_GEOMETRY_H_INCLUDED
 
+/**
+ * @file io/geometry.h
+ * @brief Introduces functions related to the
+ * printing of shapes in the terminal.
+ *
+ * @author Lucas LAZARE
+ */
+
 #include <io/bool.h>
 #include <stdio.h>
 #include <io/coordinates_struct.h>
