@@ -32,11 +32,11 @@ void geometry_sample(void);
 
 int main()
 {
-	unsigned char ans;
+	unsigned char ans = 0;
 	io_setTextAttributes("+bold");
 	io_clear();
 	do{
-		ans = io_menu("Geometry\0Basic\0Quit\0", "This is not a menu", 0, IO_CENTER, "white", "blue", "grey");
+		ans = io_menu("Geometry\0Basic\0Quit\0", "This is not a menu", ans, IO_CENTER, "white", "blue", "grey");
 		switch(ans){
 		case 0:
 			geometry_sample();
@@ -113,48 +113,58 @@ void basic_sample(){
 }
 
 void geometry_sample(){
-	io_Coordinates coo, coo2, coo3;
+	io_Coordinates coo, coo2, coo3, coo4;
 	io_visibleCursor(IO_FALSE);
 	io_setEcho(IO_FALSE);
-	io_setTextAttributes("reset");
+	io_setBgColor("black");
 	io_clear();
-	coo = io_setCoordinates(io_consoleWidth() - 1, io_consoleHeight() - 1);
-	coo2 = io_setCoordinates(1,1);
-	io_setTextColor("white");
-	io_setBgColor("white");
-	io_drawLine(coo, coo2, 'L');
-	coo = io_setCoordinates(io_consoleWidth() - 1, 1);
-	coo2 = io_setCoordinates(1, io_consoleHeight() - 1);
-	io_drawLine(coo, coo2, 'L');
-	coo = io_setCoordinates(30, 1);
-	coo2 = io_setCoordinates(30, 1);
-	io_drawLine(coo2, coo, 'M');
-	coo = io_setCoordinates(1, 1);
-	coo2 = io_setCoordinates(10, 8);
-	io_setTextColor("blue");
+
+	coo = io_setCoordinates(io_consoleWidth() / 3, 0);
+	coo2 = io_setCoordinates(2 * io_consoleWidth() / 3 + 1, io_consoleHeight() / 3);
+	io_setBgColor("cyan");
+	io_drawFilledRectangle(coo, coo2, ' ');
+
+	coo.x = io_consoleWidth() / 3;
+	coo2.y = coo2.x = coo3.y = 0;
+	coo3.x = io_consoleWidth();
+	coo4.x = 2 * io_consoleWidth() / 3;
+	coo4.y = io_consoleHeight() / 3;
+	for(coo.y = coo4.y; coo.y ; --coo.y){
+		io_drawLine(coo, coo2, ' ');
+		coo4.y = coo.y;
+		io_drawLine(coo4, coo3, ' ');
+	}
+
+	coo = io_setCoordinates(io_consoleWidth(), io_consoleHeight());
+	coo2 = io_setCoordinates(0,0);
+	io_setBgColor("grey");
+	io_drawLine(coo, coo2, ' ');
+
+	coo = io_setCoordinates(io_consoleWidth(), 0);
+	coo2 = io_setCoordinates(0, io_consoleHeight());
+	io_drawLine(coo, coo2, ' ');
+	
+	coo = io_setCoordinates(io_consoleWidth() / 3, io_consoleHeight() / 3);
+	coo2 = io_setCoordinates(2 * io_consoleWidth() / 3, 2 * io_consoleHeight() / 3);
 	io_setBgColor("blue");
-	io_drawFilledRectangle(coo, coo2, '~');
+	io_drawFilledRectangle(coo, coo2, ' ');
+
 	io_setBgColor("light grey");
-	io_setTextColor("light grey");
-	io_drawRectangle(coo, coo2, '#');
-	coo = io_setCoordinates(20,20);
-	coo2 = io_setCoordinates(25,15);
-	coo3 = io_setCoordinates(40,30);
-	io_drawCircle(coo, 5, 'o');
+	io_drawRectangle(coo, coo2, ' ');
+
+	coo = io_setCoordinates(io_consoleWidth()/2,io_consoleHeight()/2);
+
+	io_drawCircle(coo, 5, ' ');
 	io_setBgColor("red");
-	io_setTextColor("red");
-	io_drawCircle(coo, 4, 'o');
+	io_drawCircle(coo, 4, ' ');
 	io_setBgColor("yellow");
-	io_setTextColor("yellow");
-	io_drawCircle(coo, 3, 'o');
+	io_drawCircle(coo, 3, ' ');
 	io_setBgColor("green");
-	io_setTextColor("green");
-	io_drawCircle(coo, 2, 'o');
+	io_drawCircle(coo, 2, ' ');
 	io_setBgColor("light green");
-	io_setTextColor("light green");
-	io_drawCircle(coo, 1, 'o');
-	coo = io_setCoordinates(40,15);
-	io_drawArch(coo, coo2, coo3, 'A');
+	io_drawCircle(coo, 1, ' ');
+	io_drawCircle(coo, 8, ' ');
+
 	io_setEcho(IO_TRUE);
 	(void)io_instantGetChar();
 	io_visibleCursor(IO_TRUE);

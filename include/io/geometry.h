@@ -88,11 +88,4 @@ void io_drawCircle(io_Coordinates center, unsigned short radius, char draw_char)
  */
 void io_drawArch(io_Coordinates center, io_Coordinates first_point_of_arch, io_Coordinates last_point_of_arch, char draw_char);
 
-/**
- * @brief computes the absolute value of a number
- * @param val Number
- * @return    The absolute value of val
- */
-double io_abs(double val);
-
 #endif /* IO_GEOMETRY_H_INCLUDED */

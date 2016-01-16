@@ -91,4 +91,81 @@ io_Sprite* io_usePartOfSprite(io_Sprite* sprite, io_Coordinates drawing_beg, io_
  */
 io_Sprite* io_clearAndUsePart(io_Sprite* sprite, io_Coordinates drawing_beg, io_Coordinates drawing_end);
 
+/* TODO */
+/**
+ * @brief Prints a filled rectangle in the given sprite, at the given coordinates
+ * @param sprite    Sprite to edit
+ * @param beg       Coordinates of the rectangle's top left corner (within the sprite)
+ * @param end       Coordinates of the rectangle's bottom right corner (within the sprite)
+ * @param draw_char Char to be drawn
+ * @return          The sprite
+ */
+io_Sprite* io_drawFilledRectangleIn(io_Sprite* sprite, io_Coordinates beg, io_Coordinates end, char draw_char);
+
+/* TODO */
+/**
+ * @brief Prints an empty rectangle in the given sprite, at the given coordinates
+ * @param sprite    Sprite to edit
+ * @param beg       Coordinates of the rectangle's top left corner (within the sprite)
+ * @param end       Coordinates of the rectangle's bottom right corner (within the sprite)
+ * @param draw_char Char to be drawn
+ * @return          The sprite
+ */
+io_Sprite* io_drawRectangleIn(io_Sprite* sprite, io_Coordinates beg, io_Coordinates end, char draw_char);
+
+/* TODO */
+/**
+ * @brief Prints a line in the given sprite
+ * @param sprite    Sprite to edit
+ * @param beg       Coordinates of the line's beginning
+ * @param end       Coordinates of the line's end
+ * @param draw_char Char to be drawn
+ * @return          The sprite
+ */
+io_Sprite* io_drawLineIn(io_Sprite* sprite, io_Coordinates beg, io_Coordinates end, char draw_char);
+
+/* TODO */
+/**
+ * @brief Prints a vertical line in the given sprite
+ * @param sprite    Sprite to edit
+ * @param beg       Coordinate of an extremity of the line
+ * @param height    Height of the line
+ * @param draw_char Char to be drawn
+ * @return          The sprite
+ */
+io_Sprite* io_drawVerticalLineIn(io_Sprite* sprite, io_Coordinates beg, unsigned short height, char draw_char);
+
+/* TODO */
+/**
+ * @brief Prints an horizontal line in the given sprite
+ * @param sprite    Sprite to edit
+ * @param beg       Coordinates of an extremity of the line
+ * @param width     width of the line
+ * @param draw_char Char to be drawn
+ */
+io_Sprite io_drawHorizontalLineIn(io_Sprite* sprite, io_Coordinates beg, unsigned short width, char draw_char);
+
+/* TODO */
+/**
+ * @brief Prints a circle in the given sprite
+ * @param sprite    Sprite to edit
+ * @param center    Coordinates of the center of the circle.
+ * @param radius    Radius of the circle
+ * @param draw_char Char to draw
+ * @return          The sprite
+ */
+io_Sprite* io_drawCircleIn(io_Sprite* sprite, io_Coordinates center, unsigned short radius, char draw_char);
+
+/* TODO */
+/**
+ * @brief Draws a circle arch (clockwise) in the given sprite
+ * @param sprite              Sprite to edit
+ * @param center              Coordinates of the center of the arch
+ * @param first_point_of_arch Coordinates of the first point of the arch
+ * @param last_point_of_arch  Coordinates of the last point of the arch
+ * @param draw_char           Character to draw
+ * @return                    The sprite
+ */
+void io_drawArchIn(io_Sprite* sprite, io_Coordinates center, io_Coordinates first_point_of_arch, io_Coordinates last_point_of_arch, char draw_char);
+
 #endif /* IO_SPRITE_MANAGEMENT_H_INCLUDED */

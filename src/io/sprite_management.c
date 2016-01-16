@@ -25,6 +25,13 @@
  
 #include <io/sprite_management.h>
 
+/**
+ * @brief computes the absolute value of a number
+ * @param val Number
+ * @return    The absolute value of val
+ */
+inline static double io_abs(double val);
+
 io_Sprite* io_newSprite(unsigned short x_len, unsigned short y_len, char* char_table, char* txt_color, char*bg_color)
 {
 	io_Sprite* newsp = (io_Sprite*)malloc(sizeof(io_Sprite));
@@ -79,4 +86,13 @@ io_Sprite* io_clearAndUsePart(io_Sprite* sprite, io_Coordinates drawing_beg, io_
 {
 	io_clearSprite(sprite);
 	return io_usePartOfSprite(sprite, drawing_beg, drawing_end);
+}
+
+inline static double io_abs(double val){
+	if (val < 0) {
+			return -val;
+		}
+	else {
+			return val;
+		}
 }

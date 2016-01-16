@@ -25,6 +25,13 @@
 
 #include <io/geometry.h>
 
+/**
+ * @brief computes the absolute value of a number
+ * @param val Number
+ * @return    The absolute value of val
+ */
+inline static double io_abs(double val);
+
 void io_drawFilledRectangle(io_Coordinates beg, io_Coordinates end, char draw_char){
 	unsigned short width = end.x - beg.x, height = end.y - beg.y;
 	unsigned short i;
@@ -135,7 +142,7 @@ void io_drawArch(io_Coordinates center, io_Coordinates first_point_of_arch, io_C
 
 	radius = sqrt(pow(x1, 2) + pow(y1, 2));
 
-	if (io_abs(radius - sqrt(pow(x2, 2) + pow(y2, 2))) < 0.01) {
+	if (io_abs(radius - sqrt(pow(x2, 2) + pow(y2, 2))) < 0.00001) {
 		angle1 = acos((double)(x1) / (double)(radius)) + (M_PI * (y1 < 0));
 		angle2 = acos((double)(x2) / (double)(radius)) + (M_PI * (y2 < 0));
 		angle2+= 2*M_PI*(angle1 > angle2);
@@ -153,7 +160,7 @@ void io_drawArch(io_Coordinates center, io_Coordinates first_point_of_arch, io_C
 	}
 }
 
-double io_abs(double val){
+inline static double io_abs(double val){
 	if (val < 0) {
 		return -val;
 	}
