@@ -43,6 +43,7 @@ LIBSDIR		= -L/usr/lib -L.
 LIBSOURCENAME	= console_management cursor geometry input  output sprite_display sprite_management coordinates
 LIBNAME		= libio
 EXAMPLESOURCE	= src/sample.c
+EXAMPLEBIN	= $(BUILDDIR)example.elf
 LINKS		= -lm
 
 LIBFINALOBJ	= $(OBJDIR)$(LIBNAME).o
@@ -84,13 +85,15 @@ $(OBJDIR)%.o: %.c
 	@$(DISPLAY) " -> Done"
 
 .PHONY: example
-example: $(LIBFINAL) $(EXAMPLESOURCE)
-	@$(DISPLAY) "\n\n\033[1m\033[92m+\033[0m Building \033[33m$(BUILDDIR)example.elf\033[0m from \033[33m$(EXAMPLESOURCE)\033[0m..."
-	@$(COMPILER) $(COMPFLAGS) $(INCLUDEDIR) $(LIBSDIR) $(EXAMPLESOURCE) -o $(BUILDDIR)example.elf -l:$(LIBFINAL)
-	@for i in `seq 1 $(shell expr 65 - $(call STRLEN,$(BUILDDIR)example.elf) - $(call STRLEN,$(EXAMPLESOURCE)))`; do $(DISPLAY) " "; done
+example: $(EXAMPLEBIN)
+	@$(DISPLAY) "\n\033[1m\033[92m+\033[0m Launching \033[33m$(EXAMPLEBIN)\033[0m\n"
+	@LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$(LIBBUILDDIR) $(EXAMPLEBIN)
+
+$(EXAMPLEBIN): $(LIBFINAL) $(EXAMPLESOURCE)
+	@$(DISPLAY) "\n\n\033[1m\033[92m+\033[0m Building \033[33m$(EXAMPLEBIN)\033[0m from \033[33m$(EXAMPLESOURCE)\033[0m..."
+	@$(COMPILER) $(COMPFLAGS) $(INCLUDEDIR) $(LIBSDIR) $(EXAMPLESOURCE) -o $(EXAMPLEBIN) -l:$(LIBFINAL)
+	@for i in `seq 1 $(shell expr 65 - $(call STRLEN,$(EXAMPLEBIN)) - $(call STRLEN,$(EXAMPLESOURCE)))`; do $(DISPLAY) " "; done
 	@$(DISPLAY) " -> Done\n"
-	@$(DISPLAY) "\n\033[1m\033[92m+\033[0m Launching \033[33m$(BUILDDIR)example.elf\033[0m\n"
-	@LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$(LIBBUILDDIR) $(BUILDDIR)example.elf
 
 .PHONY: debug
 debug: COMPFLAGS = -g -fPIC
