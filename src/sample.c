@@ -124,8 +124,9 @@ void geometry_sample(){
 	io_setBgColor("cyan");
 	io_drawFilledRectangle(coo, coo2, ' ');
 
-	coo.x = io_consoleWidth() / 3;
-	coo2.y = coo2.x = coo3.y = 0;
+	coo.x = io_consoleWidth() / 3 + 1;
+	coo2.y = coo3.y = 0;
+	coo2.x = 1;
 	coo3.x = io_consoleWidth();
 	coo4.x = 2 * io_consoleWidth() / 3;
 	coo4.y = io_consoleHeight() / 3;

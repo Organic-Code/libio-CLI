@@ -33,6 +33,7 @@ RMDIR		= rmdir
 RM		= rm -f
 LD		= ld -r
 LIBPREFIX	= lib
+VOIDECHO	= > /dev/null 2>&1
 BUILDDIR	= build/
 LIBBUILDDIR	= $(BUILDDIR)lib/
 OBJDIR		= $(BUILDDIR)obj/
@@ -106,5 +107,5 @@ memleak: $(LIBFINAL) $(EXAMPLESOURCE)
 clean:
 	@$(DISPLAY) "\033[0mCleaning files and folders...\n"
 	@$(RM) $(LIBOBJECTS) $(LIBFINAL) $(OBJDIR)$(LIBNAME).o $(BUILDDIR)example.elf
-	@$(RMDIR) $(LIBBUILDDIR) $(OBJDIR) $(BUILDDIR)
+	@$(RMDIR) $(LIBBUILDDIR) $(OBJDIR) $(BUILDDIR) $(VOIDECHO) || true
 	@$(DISPLAY) "Done\n"
