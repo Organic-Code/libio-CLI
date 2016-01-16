@@ -139,9 +139,6 @@ unsigned char io_menu(const char* choices, const char* title, unsigned char choi
 		io_centerPrint(title, (unsigned short)(y_box-1));
 	}
 
-	/* FIXME ! (shouldn't need to reset) */
-	io_setTextAttributes("reset");
-
 	io_setBgColor(bg_color);
 	io_setTextColor(text_color);
 
