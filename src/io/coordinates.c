@@ -23,18 +23,11 @@
  ************************************************************************************************************/
  
 
-#ifndef IO_COORDINATES_STRUCT_H_INCLUDED
-#define IO_COORDINATES_STRUCT_H_INCLUDED
+#include <io/coordinates_struct.h>
 
-/**
- * @struct io_Coordinates
- * @brief A structure defining a character's coordinates
- */
-typedef struct{
-	unsigned short x; /*!< Column of the character */
-	unsigned short y; /*!< Row of the character */
-}io_Coordinates;
-
-io_Coordinates io_setCoordinates(unsigned short x, unsigned short y);
-
-#endif /* IO_COORDINATES_STRUCT_H_INCLUDED */
+io_Coordinates io_setCoordinates(unsigned short x, unsigned short y) {
+	io_Coordinates a;
+	a.x = x;
+	a.y = y;
+	return a;
+}

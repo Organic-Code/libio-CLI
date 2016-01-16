@@ -24,7 +24,9 @@
 
 
 COMPILER	= gcc
-COMPFLAGS	= -Wdisabled-optimization -Wstrict-prototypes -Wbad-function-cast -Wvector-operation-performance -Winvalid-pch -Wsuggest-final-types -Wdouble-promotion -Wformat -Wall -Werror -pedantic -pedantic-errors -Wunreachable-code -Winline -Wfloat-equal -Wundef -Wcast-align -Wredundant-decls -Winit-self -Wswitch-enum -fPIC -g
+COMPFLAGS	= -Wdisabled-optimization -Wstrict-prototypes -Wbad-function-cast -Wvector-operation-performance -Winvalid-pch -Wsuggest-final-types -Wdouble-promotion -Wformat -Wall -Werror -pedantic -pedantic-errors -Wunreachable-code -Winline -Wfloat-equal -Wundef -Wcast-align -Wredundant-decls -Winit-self -Wswitch-enum -fPIC -O3
+DEBUGGER	= gdb
+LEAKCHECKER	= valgrind --leak-check=full --show-leak-kinds=all
 DISPLAY		= printf
 MKDIR		= mkdir -p
 RMDIR		= rmdir
@@ -37,7 +39,7 @@ OBJDIR		= $(BUILDDIR)obj/
 SOURCEDIR	= src/io/
 INCLUDEDIR	= -I/usr/include -I. -Iinclude/
 LIBSDIR		= -L/usr/lib -L.
-LIBSOURCENAME	= console_management cursor geometry input  output sprite_display sprite_management
+LIBSOURCENAME	= console_management cursor geometry input  output sprite_display sprite_management coordinates
 LIBNAME		= libio
 EXAMPLESOURCE	= src/sample.c
 LINKS		= -lm
@@ -59,17 +61,22 @@ LIBSDIR += -L$(BUILDDIR)
 $(LIBNAME): $(LIBFINAL)
 
 $(LIBFINAL): $(LIBFINALOBJ)
-	@$(DISPLAY) "\n\033[1m\033[92m+\033[0m Building \033[33m$(LIBFINAL)\033[0m from \033[33m$(OBJDIR)$(LIBNAME).o\033[0m...\n"
+	@$(DISPLAY) "\n\033[1m\033[92m+\033[0m Building \033[33m$(LIBFINAL)\033[0m from \033[33m$(OBJDIR)$(LIBNAME).o\033[0m..."
 	@$(MKDIR) $(LIBBUILDDIR)
 	@$(COMPILER) $(COMPFLAGS) $(LIBSDIR) $(LINKS) -shared $(OBJDIR)$(LIBNAME).o -o $(LIBFINAL)
+	@for i in `seq 1 $(shell expr 65 - $(call STRLEN,$(OBJDIR)$(LIBNAME).o) - $(call STRLEN,$(LIBFINAL)))`; do $(DISPLAY) " "; done
+	@$(DISPLAY) " -> Done\n"
 	@$(DISPLAY) "\n"
 
 $(LIBFINALOBJ): $(LIBOBJECTS)
-	@$(DISPLAY) "\n\n\033[1m\033[92m+\033[0m Merging objects files into \033[33m$(OBJDIR)$(LIBNAME).o\033[0m...\n"
+	@$(DISPLAY) "\n\n\033[1m\033[92m+\033[0m Merging objects files into \033[33m$(OBJDIR)$(LIBNAME).o\033[0m..."
 	@$(LD) $(LIBOBJECTS) -o $(OBJDIR)$(LIBNAME).o
+	@for i in `seq 1 $(shell expr 52 - $(call STRLEN,$(OBJDIR)$(LIBNAME).o))`; do $(DISPLAY) " "; done
+	@$(DISPLAY) " -> Done\n"
+
 
 $(OBJDIR)%.o: %.c
-	@$(DISPLAY) "\n\033[1m\033[92m+\033[0m Building \033[33m$@\033[0m from \033[33m$^\033[0m"
+	@$(DISPLAY) "\n\033[1m\033[92m+\033[0m Building \033[33m$@\033[0m from \033[33m$^\033[0m..."
 	@$(MKDIR) $(OBJDIR)
 	@$(COMPILER) $(COMPFLAGS) $(INCLUDEDIR) -c $^ -o $@
 	@for i in `seq 1 $(shell expr 65 - $(call STRLEN,$^) - $(call STRLEN,$@))`; do $(DISPLAY) " "; done
@@ -77,9 +84,24 @@ $(OBJDIR)%.o: %.c
 
 .PHONY: example
 example: $(LIBFINAL) $(EXAMPLESOURCE)
+	@$(DISPLAY) "\n\n\033[1m\033[92m+\033[0m Building \033[33m$(BUILDDIR)example.elf\033[0m from \033[33m$(EXAMPLESOURCE)\033[0m..."
 	@$(COMPILER) $(COMPFLAGS) $(INCLUDEDIR) $(LIBSDIR) $(EXAMPLESOURCE) -o $(BUILDDIR)example.elf -l:$(LIBFINAL)
+	@for i in `seq 1 $(shell expr 65 - $(call STRLEN,$(BUILDDIR)example.elf) - $(call STRLEN,$(EXAMPLESOURCE)))`; do $(DISPLAY) " "; done
+	@$(DISPLAY) " -> Done\n"
+	@$(DISPLAY) "\n\033[1m\033[92m+\033[0m Launching \033[33m$(BUILDDIR)example.elf\033[0m\n"
 	@LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$(LIBBUILDDIR) $(BUILDDIR)example.elf
 
+.PHONY: debug
+debug: COMPFLAGS = -g -fPIC
+debug: $(LIBFINAL) $(EXAMPLESOURCE)
+	@$(COMPILER) $(COMPFLAGS) $(INCLUDEDIR) $(LIBSDIR) $(EXAMPLESOURCE) -o $(BUILDDIR)example.elf -l:$(LIBFINAL)
+	@LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$(LIBBUILDDIR) $(DEBUGGER) $(BUILDDIR)example.elf
+
+.PHONY: memleak
+memleak: COMPFLAGS = -g -fPIC
+memleak: $(LIBFINAL) $(EXAMPLESOURCE)
+	@$(COMPILER) $(COMPFLAGS) $(INCLUDEDIR) $(LIBSDIR) $(EXAMPLESOURCE) -o $(BUILDDIR)example.elf -l:$(LIBFINAL)
+	@LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$(LIBBUILDDIR) $(LEAKCHECKER) $(BUILDDIR)example.elf
 .PHONY: clean
 clean:
 	@$(DISPLAY) "\033[0mCleaning files and folders...\n"

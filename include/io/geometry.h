@@ -33,21 +33,20 @@
 
 /**
  * @brief Draws a filled rectangle
- * @param beg       Coordinates of the rectangle's beginning
- * @param end       Coordinates of the rectangle's ending
+ * @param beg       Coordinates of the rectangle's top left corner
+ * @param end       Coordinates of the rectangle's bottom right corner
  * @param draw_char Char to be drawn
  */
 void io_drawFilledRectangle(io_Coordinates beg, io_Coordinates end, char draw_char);
 
 /**
  * @brief Draws an empty rectangle
- * @param beg       Coordinates of the rectangle's beginning
- * @param end       Coordinates of the rectangle's ending
+ * @param beg       Coordinates of the rectangle's top left corner
+ * @param end       Coordinates of the rectangle's bottom right corner
  * @param draw_char Char to be drawn
  */
 void io_drawRectangle(io_Coordinates beg, io_Coordinates end, char draw_char);
 
-/* FIXME */
 /**
  * @brief Draws a line
  * @param beg       Coordinates of the line's beginning
@@ -65,12 +64,12 @@ void io_drawLine(io_Coordinates beg, io_Coordinates end, char draw_char);
 void io_drawVerticalLine(io_Coordinates beg, unsigned short height, char draw_char);
 
 /**
- * @brief Draws a doted line
- * @param beg       Coordinates of the line's beginning
- * @param end       Coordinates of the line's end
+ * @brief Draws an horizontal line
+ * @param beg       Coordinates of an extremity of the line
+ * @param width     width of the line
  * @param draw_char Char to be drawn
  */
-void io_drawDotedLine(io_Coordinates beg, io_Coordinates end, char draw_char);
+void io_drawHorizontalLine(io_Coordinates beg, unsigned short width, char draw_char);
 
 /**
  * @brief Prints a circle at the specified coordinates and with the specified char
@@ -80,7 +79,6 @@ void io_drawDotedLine(io_Coordinates beg, io_Coordinates end, char draw_char);
  */
 void io_drawCircle(io_Coordinates center, unsigned short radius, char draw_char);
 
-/* FIXME */
 /**
  * @brief Draws a circle arch (clockwise)
  * @param center              Coordinates of the center of the arch
@@ -89,5 +87,12 @@ void io_drawCircle(io_Coordinates center, unsigned short radius, char draw_char)
  * @param draw_char           Character to draw
  */
 void io_drawArch(io_Coordinates center, io_Coordinates first_point_of_arch, io_Coordinates last_point_of_arch, char draw_char);
+
+/**
+ * @brief computes the absolute value of a number
+ * @param val Number
+ * @return    The absolute value of val
+ */
+double io_abs(double val);
 
 #endif /* IO_GEOMETRY_H_INCLUDED */

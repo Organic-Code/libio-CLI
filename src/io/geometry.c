@@ -26,77 +26,58 @@
 #include <io/geometry.h>
 
 void io_drawFilledRectangle(io_Coordinates beg, io_Coordinates end, char draw_char){
-	unsigned short width, height;
-	unsigned short i, j;
-	if (beg.x > end.x && end.y > beg.y){
-		io_Coordinates tmp = end;
-		end = beg;
-		beg = tmp;
-	}
-	width = end.x - beg.x;
-	height = end.y - beg.y;
-	io_setCursorPos(beg.x, beg.y);
+	unsigned short width = end.x - beg.x, height = end.y - beg.y;
+	unsigned short i;
 
-	for (i = height; i--;){
-		io_setCursorPos(beg.x, beg.y + i);
-		for (j = width; j--;)
+	for (; height--;){
+		io_setCursorPos(beg.x, beg.y + height);
+		for (i = width; i--;)
 			printf("%c", draw_char);
 	}
-	end.x = 0;
-	draw_char = 'a';
 }
 
 void io_drawRectangle(io_Coordinates beg, io_Coordinates end, char draw_char){
-	io_Coordinates out;
-	out.x = end.x;
-	out.y = beg.y;
-	io_drawLine(beg, out, draw_char);
-	io_drawLine(out, end, draw_char);
-	out.x = beg.x;
-	out.y = end.y;
-	io_drawLine(beg, out, draw_char);
-	io_drawLine(out, end, draw_char);
+	io_drawVerticalLine(beg, end.y - beg.y, draw_char);
+	io_drawVerticalLine(io_setCoordinates(end.x, beg.y), end.y - beg.y, draw_char);
+	io_drawHorizontalLine(beg, end.x - beg.x, draw_char);
+	io_drawHorizontalLine(io_setCoordinates(beg.x, end.y), end.x - beg.x + 1, draw_char);
 }
 
 void io_drawLine(io_Coordinates beg, io_Coordinates end, char draw_char){
-	unsigned short j, i, a;
-
 	if (end.x == beg.x) {
-		io_drawVerticalLine(beg, end.y - beg.y, draw_char);
+		io_drawVerticalLine(beg.y > end.y ? end : beg, io_abs(end.y - beg.y), draw_char);
 	}
+	else if (end.y == beg.y) {
+		io_drawHorizontalLine(beg.x > end.x ? end : beg, io_abs(end.x - beg.x), draw_char);
+	}
+	else {
+		if (beg.x > end.x) {
+			io_Coordinates tmp = beg;
+			beg = end;
+			end = tmp;
+		}
+		double i = 0, a = ((double)(end.y - beg.y)/(double)(end.x - beg.x));
+		int j;
 
-	a = (unsigned short)((double)(end.y - beg.y)/(double)(end.x - beg.x));
-
-	for (i = a; i-- ;){
-		for(j = end.x - beg.x ; j-- ;)
-		{
-			io_setCursorPos(j + beg.x, a * j + beg.y + i);
-			printf("%c", draw_char);
+		for (; i < io_abs(a) ; ++i) {
+			for(j = 0 ; j <= io_abs(end.x - beg.x) ; ++j) {
+				io_setCursorPos(j + beg.x, a * j + beg.y + i);
+				printf("%c", draw_char);
+			}
 		}
 	}
 }
 
 void io_drawVerticalLine(io_Coordinates beg, unsigned short height, char draw_char){
-	unsigned short i;
-	
-	for (i = height ; i--;) {
-		io_setCursorPos(beg.x, beg.y + i);
+	for (;height--;) {
+		io_setCursorPos(beg.x, beg.y + height);
 		printf("%c", draw_char);
 	}
 }
 
-void io_drawDotedLine(io_Coordinates beg, io_Coordinates end, char draw_char){
-	unsigned short a, i;
-
-	if (end.x == beg.x) {
-		io_drawVerticalLine(beg, end.y - beg.y, draw_char);
-	}
-
-	a=(unsigned short)((end.y - beg.y) / (end.x - beg.x));
-
-	for (i = end.x - end.y ; i-- ;)
-	{
-		io_setCursorPos(i + beg.x, a * i + beg.y);
+void io_drawHorizontalLine(io_Coordinates beg, unsigned short width, char draw_char){
+	io_setCursorPos(beg.x, beg.y);
+	for(;width--;){
 		printf("%c", draw_char);
 	}
 }
@@ -147,21 +128,36 @@ void io_drawArch(io_Coordinates center, io_Coordinates first_point_of_arch, io_C
 	double angle1;
 	double angle2;
 
-	first_point_of_arch.x-=center.x;
-	first_point_of_arch.y-=center.y;
-	last_point_of_arch.x-=center.x;
-	last_point_of_arch.y-=center.y;
-	radius = sqrt(pow((double)first_point_of_arch.x, 2)+pow((double)first_point_of_arch.y, 2));
-	angle1 = acos((double)(first_point_of_arch.x/radius)) + (M_PI*(first_point_of_arch.y<0));
-	angle2 = acos((double)(last_point_of_arch.x/radius)) + (M_PI*(last_point_of_arch.y<0));
-	angle2+= 2*M_PI*(angle1>angle2);
+	double x1 = first_point_of_arch.x - center.x;
+	double y1 = first_point_of_arch.y - center.y;
+	double x2 = last_point_of_arch.x - center.x;
+	double y2 = -(last_point_of_arch.y - center.y);
 
-	double x, y, i;
-	for (i = angle1 ; i < angle2 ; i += (angle2 - angle1 + 1) / (3.5 * radius))
-	{
-		x = radius*cos(i);
-		y = radius*sin(i);
-		io_setCursorPos(center.x + x, center.y + y);
-		printf("%c", draw_char);
+	radius = sqrt(pow(x1, 2) + pow(y1, 2));
+
+	if (io_abs(radius - sqrt(pow(x2, 2) + pow(y2, 2))) < 0.01) {
+		angle1 = acos((double)(x1) / (double)(radius)) + (M_PI * (y1 < 0));
+		angle2 = acos((double)(x2) / (double)(radius)) + (M_PI * (y2 < 0));
+		angle2+= 2*M_PI*(angle1 > angle2);
+
+		double stp = 2 * radius * (angle2 - angle1) + 1;
+
+		double x, y, i;
+		for (i = angle1 ; i < angle2 ; i += (angle2 - angle1 + 1) / stp)
+		{
+			x = radius*cos(i);
+			y = radius*sin(i);
+			io_setCursorPos((unsigned short)(center.x + x), (unsigned short)(center.y + y));
+			printf("%c", draw_char);
+		}
+	}
+}
+
+double io_abs(double val){
+	if (val < 0) {
+		return -val;
+	}
+	else {
+		return val;
 	}
 }

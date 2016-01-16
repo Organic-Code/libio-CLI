@@ -25,8 +25,8 @@
 
 #include <io/console_management.h>
 
-static char* io_current_bg_color = NULL;
-static char* io_current_txt_color = NULL;
+static char io_current_bg_color[14];
+static char io_current_txt_color[14];
 static IO_BOOL io_cursor_visible = IO_TRUE;
 static IO_BOOL io_echo_setting = IO_TRUE;
 
@@ -82,9 +82,9 @@ void io_setBgColor(const char* color)
 		else if (!strcmp(color, "light cyan"))                        printf("\033[106m");/*break*/
 		else if (!strcmp(color, "white"))                             printf("\033[107m");/*break*/
 
-		free(io_current_bg_color);
-		io_current_bg_color = (char*) malloc((int)(strlen(color) + 1) * sizeof(char));
-		strcpy(io_current_bg_color, color);
+		if (strlen(color) < 14) {
+			strcpy(io_current_bg_color, color);
+		}
 	}
 }
 
@@ -108,10 +108,9 @@ void io_setTextColor(const char* color)
 		else if (!strcmp(color, "light cyan"))                        printf("\033[96m");/*break*/
 		else if (!strcmp(color, "white"))                             printf("\033[97m");/*break*/
 
-		free(io_current_txt_color);
-		io_current_txt_color = (char*) malloc((int)(strlen(color) + 1) * sizeof(char));
-		strcpy(io_current_txt_color, color);
-
+		if (strlen(color) < 14) {
+			strcpy(io_current_txt_color, color);
+		}
 	}
 }
 
