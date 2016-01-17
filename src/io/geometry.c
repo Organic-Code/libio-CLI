@@ -32,6 +32,22 @@
  */
 inline static double io_abs(double val);
 
+/**
+ * @brief Draws a vertical line
+ * @param beg       Coordinate of an extremity of the line
+ * @param height    Height of the line
+ * @param draw_char Char to be drawn
+ */
+inline static void io_drawVerticalLine(io_Coordinates beg, unsigned short height, char draw_char);
+
+/**
+ * @brief Draws an horizontal line
+ * @param beg       Coordinates of an extremity of the line
+ * @param width     width of the line
+ * @param draw_char Char to be drawn
+ */
+inline static void io_drawHorizontalLine(io_Coordinates beg, unsigned short width, char draw_char);
+
 void io_drawFilledRectangle(io_Coordinates beg, io_Coordinates end, char draw_char){
 	unsigned short width = end.x - beg.x, height = end.y - beg.y;
 	unsigned short i;
@@ -75,14 +91,14 @@ void io_drawLine(io_Coordinates beg, io_Coordinates end, char draw_char){
 	}
 }
 
-void io_drawVerticalLine(io_Coordinates beg, unsigned short height, char draw_char){
+inline static void io_drawVerticalLine(io_Coordinates beg, unsigned short height, char draw_char){
 	for (;height--;) {
 		io_setCursorPos(beg.x, beg.y + height);
 		printf("%c", draw_char);
 	}
 }
 
-void io_drawHorizontalLine(io_Coordinates beg, unsigned short width, char draw_char){
+inline static void io_drawHorizontalLine(io_Coordinates beg, unsigned short width, char draw_char){
 	io_setCursorPos(beg.x, beg.y);
 	for(;width--;){
 		printf("%c", draw_char);

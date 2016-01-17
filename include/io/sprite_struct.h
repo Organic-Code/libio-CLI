@@ -20,7 +20,7 @@ typedef struct{
 	io_Coordinates drawing_end_coo; /*!< Coordinates of the end of the sub-sprite (default: x_size,y_size) */
 	unsigned short x_size; /*!< Length of the sprite */
 	unsigned short y_size; /*!< Height of the sprite */
-	char* char_table; /*!< Sprite itself */
+	char** char_table; /*!< Sprite itself */
 	char* txt_color; /*!< Color for the sprite's text. NULL for no particular color */
 	char* bg_color; /*!< Color for the sprite's background. NULL for no particular color */
 	IO_BOOL draw_spaces; /*!< true if displays functions should print the spaces, false otherwise. */

@@ -64,22 +64,6 @@ void io_drawRectangle(io_Coordinates beg, io_Coordinates end, char draw_char);
 void io_drawLine(io_Coordinates beg, io_Coordinates end, char draw_char);
 
 /**
- * @brief Draws a vertical line
- * @param beg       Coordinate of an extremity of the line
- * @param height    Height of the line
- * @param draw_char Char to be drawn
- */
-void io_drawVerticalLine(io_Coordinates beg, unsigned short height, char draw_char);
-
-/**
- * @brief Draws an horizontal line
- * @param beg       Coordinates of an extremity of the line
- * @param width     width of the line
- * @param draw_char Char to be drawn
- */
-void io_drawHorizontalLine(io_Coordinates beg, unsigned short width, char draw_char);
-
-/**
  * @brief Prints a circle at the specified coordinates and with the specified char
  * @param center    Coordinates of the center of the circle.
  * @param radius    Radius of the circle
