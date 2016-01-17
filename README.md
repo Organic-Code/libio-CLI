@@ -23,6 +23,6 @@ Then, run make to build
 By default, the library is generated in ./build/lib, and named libio.so.
 You may run the demo program using
 
-``$ make example``
+``$ make test``
 
 (no installation required to test it ; there is no ``# make install`` recipe anyway)

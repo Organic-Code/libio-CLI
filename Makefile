@@ -85,7 +85,7 @@ $(OBJDIR)%.o: %.c
 	@$(DISPLAY) " -> Done"
 
 .PHONY: example
-example: $(EXAMPLEBIN)
+test: $(EXAMPLEBIN)
 	@$(DISPLAY) "\n\033[1m\033[92m+\033[0m Launching \033[33m$(EXAMPLEBIN)\033[0m\n"
 	@LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$(LIBBUILDDIR) $(EXAMPLEBIN)
 
