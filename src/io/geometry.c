@@ -74,13 +74,14 @@ void io_drawLine(io_Coordinates beg, io_Coordinates end, char draw_char){
 		io_drawHorizontalLine(beg.x > end.x ? end : beg, io_abs(end.x - beg.x), draw_char);
 	}
 	else {
+		double i = 0, a = ((double)(end.y - beg.y)/(double)(end.x - beg.x));
+		int j;
+
 		if (beg.x > end.x) {
 			io_Coordinates tmp = beg;
 			beg = end;
 			end = tmp;
 		}
-		double i = 0, a = ((double)(end.y - beg.y)/(double)(end.x - beg.x));
-		int j;
 
 		for (; i < io_abs(a) ; ++i) {
 			for(j = 0 ; j <= io_abs(end.x - beg.x) ; ++j) {
@@ -159,13 +160,16 @@ void io_drawArch(io_Coordinates center, io_Coordinates first_point_of_arch, io_C
 	radius = sqrt(pow(x1, 2) + pow(y1, 2));
 
 	if (io_abs(radius - sqrt(pow(x2, 2) + pow(y2, 2))) < 0.00001) {
+		double stp;
+
+		double x, y, i;
+
 		angle1 = acos((double)(x1) / (double)(radius)) + (M_PI * (y1 < 0));
 		angle2 = acos((double)(x2) / (double)(radius)) + (M_PI * (y2 < 0));
 		angle2+= 2*M_PI*(angle1 > angle2);
 
-		double stp = 2 * radius * (angle2 - angle1) + 1;
+		stp = 2 * radius * (angle2 - angle1) + 1;
 
-		double x, y, i;
 		for (i = angle1 ; i < angle2 ; i += (angle2 - angle1 + 1) / stp)
 		{
 			x = radius*cos(i);
