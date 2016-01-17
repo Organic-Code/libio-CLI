@@ -74,14 +74,14 @@ void io_drawLine(io_Coordinates beg, io_Coordinates end, char draw_char){
 		io_drawHorizontalLine(beg.x > end.x ? end : beg, io_abs(end.x - beg.x), draw_char);
 	}
 	else {
-		double i = 0, a = ((double)(end.y - beg.y)/(double)(end.x - beg.x));
-		int j;
-
 		if (beg.x > end.x) {
 			io_Coordinates tmp = beg;
 			beg = end;
 			end = tmp;
 		}
+
+		double i = 0, a = ((double)(end.y - beg.y)/(double)(end.x - beg.x));
+		int j;
 
 		for (; i < io_abs(a) ; ++i) {
 			for(j = 0 ; j <= io_abs(end.x - beg.x) ; ++j) {
