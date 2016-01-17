@@ -28,7 +28,7 @@
 
 
 /**
- * @file io/console_management.h
+ * @file io/sprite_management.h
  * @brief Introduces functions related to the
  * management of an io_Sprite structure
  *

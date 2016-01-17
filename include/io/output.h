@@ -65,8 +65,9 @@ void io_centerPrint(const char* text, unsigned short y_pos);
 /* input & output */
 
 /**
- * @brief Prints a nice menu where you can navigate using arrow keys, and select with Enter. Some args could be easily added, such as :
- * @param choices      char pointer to a list of the selectable choices. Each choice should end with a '\0' character, and the whole list should end with 2 '\0' (eg : "choice 1\0choice 2\0choice 3\0")
+ * @brief Prints a nice menu where you can navigate using arrow keys, and select with Enter.
+ * 	call example : example io_menu("One player\0Two players\0Quit\0", "Game mode", 0, IO_LEFT, "white", "blue", "light grey");
+ * @param choices      char pointer to a list of the selectable choices. Each choice should end with a '\0' character, and the whole list should end with 2 '\0'
  * @param title        Menu's title. NULL for no title.
  * @param choice       The default selected choice
  * @param alignement   Choices alignement. may be IO_LEFT, IO_CENTER, IO_RIGHT.

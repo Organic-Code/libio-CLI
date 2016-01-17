@@ -5,7 +5,7 @@
 #include <io/coordinates_struct.h>
 
 /**
- * @file io/console_management.h
+ * @file io/sprite_struct.h
  * @brief Defines the structure io_Sprite
  * @author Lucas LAZARE
  */

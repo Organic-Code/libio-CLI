@@ -47,6 +47,7 @@ typedef struct{
  * @param x Row
  * @param y Column
  * @return  The generated io_Coordinates
+ */
 io_Coordinates io_setCoordinates(unsigned short x, unsigned short y);
 
 #endif /* IO_COORDINATES_STRUCT_H_INCLUDED */
