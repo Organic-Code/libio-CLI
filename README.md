@@ -1,8 +1,12 @@
 # libio
 libio is a library you may use to get a nice Command Line Interface (CLI). Works under Linux only.
+This library is compliant with the c90 standard.
 
-##Authors
+##Author
 + Lucas LAZARE (lazarelucas@yahoo.fr)
+
+##Copyright
+Project under the [zlib/libpng license](LICENSE).
 
 ##Compiling
 
