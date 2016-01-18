@@ -56,7 +56,11 @@ void io_setTextAttributes(const char* attribute)
 				--attribute;
 				break;
 			default:
-				if (!strcmp(attribute, "reset"))               printf("\033[0m");/*break*/
+				if (!strcmp(attribute, "reset")) {
+					printf("\033[0m");
+					io_current_bg_color[0] = '\0';
+					io_current_txt_color[0] = '\0';
+				}
 				break;
 		}
 	}

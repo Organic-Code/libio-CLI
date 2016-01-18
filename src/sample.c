@@ -24,10 +24,12 @@
 
 #include <io/basic.h>
 #include <io/geometry.h>
+#include <io/sprite.h>
 
 int main(void);
 void basic_sample(void);
 void geometry_sample(void);
+void sprites_sample(void);
 
 
 int main()
@@ -36,7 +38,7 @@ int main()
 	io_setTextAttributes("+bold");
 	io_clear();
 	do{
-		ans = io_menu("Geometry\0Basic\0Quit\0", "This is not a menu", ans, IO_CENTER, "white", "blue", "grey");
+		ans = io_menu("Geometry\0Basic\0Sprites\0Quit\0", "This is not a menu", ans, IO_CENTER, "white", "blue", "grey");
 		switch(ans){
 		case 0:
 			geometry_sample();
@@ -44,6 +46,8 @@ int main()
 		case 1:
 			basic_sample();
 			break;
+		case 2:
+			sprites_sample();
 		default:
 			break;
 		}
@@ -51,7 +55,7 @@ int main()
 		io_setEcho(IO_TRUE);
 		io_setTextAttributes("reset");
 		io_clear();
-	}while(ans != 2);
+	}while(ans != 3);
 	return 0;
 }
 
@@ -170,4 +174,12 @@ void geometry_sample(){
 	if (io_instantGetChar() == IO_SPECIAL_CHAR)
 		(void)io_instantGetChar();
 	io_visibleCursor(IO_TRUE);
+}
+
+void sprites_sample(){
+	io_setTextAttributes("reset");
+	io_clear();
+	printf("yet to be programmed");
+	if (io_instantGetChar() == IO_SPECIAL_CHAR)
+		(void)io_instantGetChar();
 }

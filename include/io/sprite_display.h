@@ -35,34 +35,32 @@
 
 #include <io/bool.h>
 #include <stdio.h>
+#include <string.h>
+#include <io/console_management.h>
+#include <io/cursor.h>
 #include <io/sprite_struct.h>
 
-/* TODO */
 /**
  * @brief Draws a Sprite at its coordinates. It may be cutted if it's too much on the edge
  * @param sprite Sprite to draw
- * @return       TRUE on success, FALSE otherwise
  */
-IO_BOOL io_printSprite(io_Sprite* sprite);
+void io_printSprite(const io_Sprite* sprite);
 
-/* TODO */
 /**
  * @brief Draws a Sprite at the specified coordinates
  * @param sprite     Sprite to draw
  * @param coordinates Coordinates where to draw the sprite
  * @return       TRUE on success, FALSE otherwise
  */
-IO_BOOL io_printSpriteAt(io_Sprite* sprite, io_Coordinates coordinates);
+void io_printSpriteAt(io_Sprite* sprite, io_Coordinates coordinates);
 
-/* TODO */
 /**
  * @brief Clears the sprite from the screen
  * @param sprite Sprite to clean.
  * @return       TRUE on success, FALSE otherwise
  */
-IO_BOOL io_clearSprite(io_Sprite* sprite);
+void io_clearSprite(const io_Sprite* sprite);
 
-/* TODO */
 /**
  * @brief Clears the sprite from the screen and reprints it to the given location
  * @param sprite     Sprite to move
@@ -70,7 +68,6 @@ IO_BOOL io_clearSprite(io_Sprite* sprite);
  */
 void io_moveSpriteTo(io_Sprite* sprite, io_Coordinates coordinates);
 
-/* TODO */
 /**
  * @brief Clears the sprite from the screen and reprints to a position relative to its previous location.
  * @param sprite The conserned sprite
@@ -79,12 +76,11 @@ void io_moveSpriteTo(io_Sprite* sprite, io_Coordinates coordinates);
  */
 void io_moveSpriteRelativ(io_Sprite* sprite, int x, int y);
 
-/* TODO */
 /**
  * @brief Prints a sprite at the center of the screen. If the screen is too small, the sprite will be cutted.
  * @param sprite Sprite to draw
  * @return       TRUE on success, FALSE otherwise
  */
-IO_BOOL io_centerPrintSprite(io_Sprite* sprite);
+void io_centerPrintSprite(io_Sprite* sprite);
 
 #endif /* IO_SPRITE_DISPLAY_H_INCLUDED */
