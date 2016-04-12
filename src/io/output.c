@@ -43,7 +43,7 @@ void io_centerPrint(const char* text, unsigned short y_pos)
 	}
 }
 
-unsigned char io_menu(const char* choices, const char* title, unsigned char choice, char alignement, const char* text_color, const char* bg_color, const char* border_color)
+unsigned char io_menu(const char* choices, const char* title, unsigned char default_choice, char alignement, const char* text_color, const char* bg_color, const char* border_color)
 {
 	const char** text;
 
@@ -66,8 +66,8 @@ unsigned char io_menu(const char* choices, const char* title, unsigned char choi
 
 	char* origin_bg_color = io_currentBgColor();
 	char* origin_txt_color = io_currentTxtColor();
-	IO_BOOL origin_cursor_visibility = io_cursorVisible();
-	IO_BOOL origin_echo_setting = io_echoSetting();
+	bool origin_cursor_visibility = io_cursorVisible();
+	bool origin_echo_setting = io_echoSetting();
 
 	if (origin_bg_color != NULL){
 		origin_bg_color = (char*) malloc((int)(strlen(origin_bg_color) + 1) * sizeof(char));
@@ -79,7 +79,7 @@ unsigned char io_menu(const char* choices, const char* title, unsigned char choi
 		strcpy(origin_txt_color, io_currentTxtColor());
 	}
 
-	io_visibleCursor(IO_FALSE);
+	io_visibleCursor(false);
 
 	while (choices[i] != '\0' || choices[i+1] != '\0'){
 		if (choices[i] == '\0') {
@@ -169,13 +169,13 @@ unsigned char io_menu(const char* choices, const char* title, unsigned char choi
 
 	/* Printing default selection */
 	io_setTextAttributes("+invert");
-	io_setCursorPos(x_text[choice], y_text[choice]);
-	printf("%s", text[choice]);
+	io_setCursorPos(x_text[default_choice], y_text[default_choice]);
+	printf("%s", text[default_choice]);
 	io_setTextAttributes("-invert");
-	io_setCursorPos(x_text[choice], y_text[choice]);
+	io_setCursorPos(x_text[default_choice], y_text[default_choice]);
 
 	/* We don't want arrow keys to display their weird stuff on the screen */
-	io_setEcho( IO_FALSE );
+	io_setEcho( false );
 
 	/* j is used to store the current selected text */
 	do
@@ -186,39 +186,39 @@ unsigned char io_menu(const char* choices, const char* title, unsigned char choi
 			printf("Changing console size now is discouraged");
 		}
 
-		key_pressed = io_instantGetChar();
-		if ((key_pressed == IO_SPECIAL_CHAR && io_instantGetChar() == '[') || key_pressed == '[') /* pressing an arrow inputs both SPECIAL, [, and a letter ; pressing pge up/down inputs [, a number, and ~ */
+		key_pressed = io_getChar();
+		if ((key_pressed == IO_SPECIAL_CHAR && io_getChar() == '[') || key_pressed == '[') /* pressing an arrow inputs both SPECIAL, [, and a letter ; pressing pge up/down inputs [, a number, and ~ */
 		{
 			/* deselecting text */
-			key_pressed = io_instantGetChar();
-			io_setCursorPos(x_text[choice], y_text[choice]);
-			printf("%s", text[choice]);
+			key_pressed = io_getChar();
+			io_setCursorPos(x_text[default_choice], y_text[default_choice]);
+			printf("%s", text[default_choice]);
 
 			switch (key_pressed)
 			{
 				case 'A':	/* Arrow up */
-					if (choice == 0)
-						choice = (unsigned char)(nb_choices - 1);
-					else --choice;
+					if (default_choice == 0)
+						default_choice = (unsigned char)(nb_choices - 1);
+					else --default_choice;
 					break;
 
 				case 'B':	/* Arrow down */
-					if (choice == nb_choices - 1)
-						choice = 0;
-					else ++choice;
+					if (default_choice == nb_choices - 1)
+						default_choice = 0;
+					else ++default_choice;
 					break;
 
 				case '5':
 					/* Page up */
-					if (io_instantGetChar() == '~') {
-						choice = 0;
+					if (io_getChar() == '~') {
+						default_choice = 0;
 					}
 					break;
 
 				case '6':
 					/* Page Down */
-					if (io_instantGetChar() == '~') {
-						choice = (unsigned char)(nb_choices - 1);
+					if (io_getChar() == '~') {
+						default_choice = (unsigned char)(nb_choices - 1);
 					}
 					break;
 
@@ -227,11 +227,11 @@ unsigned char io_menu(const char* choices, const char* title, unsigned char choi
 			}
 
 			/* selecting text */
-			io_setCursorPos(x_text[choice], y_text[choice]);
+			io_setCursorPos(x_text[default_choice], y_text[default_choice]);
 			io_setTextAttributes("+invert");
-			printf("%s", text[choice]);
+			printf("%s", text[default_choice]);
 			io_setTextAttributes("-invert");
-			io_setCursorPos(x_text[choice], y_text[choice]);
+			io_setCursorPos(x_text[default_choice], y_text[default_choice]);
 		}
 	/* loop until the user press Enter */
 	}while( key_pressed != '\n' );
@@ -247,5 +247,5 @@ unsigned char io_menu(const char* choices, const char* title, unsigned char choi
 	free(length);
 	free(origin_bg_color);
 	free(origin_txt_color);
-	return choice;
+	return default_choice;
 }

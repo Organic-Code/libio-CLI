@@ -36,7 +36,7 @@
  * cursor settings, getting terminal state, ...
  */
 
-#include <io/bool.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -66,7 +66,7 @@ void io_setTextColor(const char* color);
  * @brief Sets the cursor visibility
  * @param visible TRUE to display the cursor, FALSE to hide.
  */
-void io_visibleCursor(IO_BOOL visible);
+void io_visibleCursor(bool visible);
 
 /**
  * @brief Retrieve the height of the terminal
@@ -84,7 +84,7 @@ unsigned short io_consoleWidth(void);
  * @brief Sets the output echo of user inputs
  * @param on TRUE to display, FALSE to hide
  */
-void io_setEcho(IO_BOOL on);
+void io_setEcho(bool on);
 
 /**
  * @brief Returns the current text color. If no color was set, it will return NULL.
@@ -102,12 +102,12 @@ char* io_currentBgColor(void);
  * @brief Return the cursor's visibility
  * @return TRUE if the cursor is visible, FALSE if not.
  */
-IO_BOOL io_cursorVisible(void);
+bool io_cursorVisible(void);
 
 /**
  * @brief Return echo's state.
  * @return TRUE if echo is enabled, FALSE if not
  */
-IO_BOOL io_echoSetting(void);
+bool io_echoSetting(void);
 
 #endif /* IO_CONSOLE_MANAGEMENT_H_INCLUDED */

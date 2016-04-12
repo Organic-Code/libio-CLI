@@ -28,7 +28,7 @@
 /**
  * @file io/output.h
  * @brief Declares functions related to the
- * priting of elements on the terminal.
+ * printing of elements on the terminal.
  *
  * @author Lucas LAZARE
  */
@@ -45,7 +45,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <io/bool.h>
+#include <stdbool.h>
 #include <io/cursor.h>
 #include <io/console_management.h>
 #include <io/input.h>
@@ -67,15 +67,15 @@ void io_centerPrint(const char* text, unsigned short y_pos);
 /**
  * @brief Prints a nice menu where you can navigate using arrow keys, and select with Enter.
  * 	call example : example io_menu("One player\0Two players\0Quit\0", "Game mode", 0, IO_LEFT, "white", "blue", "light grey");
- * @param choices      char pointer to a list of the selectable choices. Each choice should end with a '\0' character, and the whole list should end with 2 '\0'
- * @param title        Menu's title. NULL for no title.
- * @param choice       The default selected choice
- * @param alignement   Choices alignement. may be IO_LEFT, IO_CENTER, IO_RIGHT.
- * @param text_color   Font color of the unselected text. NULL for no particular color.
- * @param bg_color     Background color of the unselected text. NULL for no particular color.
- * @param border_color Color of the menu's border. NULL for no border
- * @return             The index of the choice selected, starting with index 0. 255 if the display was no possible.
+ * @param choices        char pointer to a list of the selectable choices. Each choice should end with a '\0' character, and the whole list should end with 2 '\0'
+ * @param title          Menu's title. NULL for no title.
+ * @param default_choice The default selected choice
+ * @param alignment     Choices alignment. may be IO_LEFT, IO_CENTER, IO_RIGHT.
+ * @param text_color     Font color of the unselected text. NULL for no particular color.
+ * @param bg_color       Background color of the unselected text. NULL for no particular color.
+ * @param border_color   Color of the menu's border. NULL for no border
+ * @return               The index of the choice selected, starting with index 0. 255 if the display was no possible.
  */
-unsigned char io_menu(const char* choices, const char* title, unsigned char choice, char alignement, const char* text_color, const char* bg_color, const char* border_color);
+unsigned char io_menu(const char* choices, const char* title, unsigned char default_choice, char alignement, const char* text_color, const char* bg_color, const char* border_color);
 
 #endif /* IO_OUTPUT_H_INCLUDED */

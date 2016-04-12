@@ -33,7 +33,7 @@
  * @author Lucas LAZARE
  */
 
-#include <io/bool.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
 #include <io/console_management.h>

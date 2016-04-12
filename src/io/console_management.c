@@ -27,8 +27,8 @@
 
 static char io_current_bg_color[14];
 static char io_current_txt_color[14];
-static IO_BOOL io_cursor_visible = IO_TRUE;
-static IO_BOOL io_echo_setting = IO_TRUE;
+static bool io_cursor_visible = true;
+static bool io_echo_setting = true;
 
 void io_setTextAttributes(const char* attribute)
 {
@@ -118,7 +118,7 @@ void io_setTextColor(const char* color)
 	}
 }
 
-void io_visibleCursor(IO_BOOL visible)
+void io_visibleCursor(bool visible)
 {
 	io_cursor_visible = visible;
 	if(visible)
@@ -145,7 +145,7 @@ unsigned short io_consoleWidth()
 	return ws.ws_col;
 }
 
-void io_setEcho(IO_BOOL on)
+void io_setEcho(bool on)
 {
 	struct termios tty;
 
@@ -161,5 +161,5 @@ void io_setEcho(IO_BOOL on)
 
 char* io_currentBgColor(){ return io_current_bg_color; }
 char* io_currentTxtColor(){ return io_current_txt_color; }
-IO_BOOL io_cursorVisible(){ return io_cursor_visible; }
-IO_BOOL io_echoSetting(){ return io_echo_setting; }
+bool io_cursorVisible(){ return io_cursor_visible; }
+bool io_echoSetting(){ return io_echo_setting; }

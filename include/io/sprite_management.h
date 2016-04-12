@@ -35,7 +35,7 @@
  * @author Lucas LAZARE
  */
 
-#include <io/bool.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <io/sprite_struct.h>
 #include <io/sprite_display.h>
@@ -48,12 +48,20 @@
  * @brief Sets a new io_Sprite.
  * @param x_len      Number of characters per line
  * @param y_len      Number of lines in the sprite
- * @param char_table Set of characters that can be drawn by sprite's functions. No '\0' are required (address will be used).
- * @param txt_color  Color used for the text (address will be used) if txt_color is set to NULL, color won't be changed to print the sprite.
- * @param bg_color   Color used for the background (address will be used) if bg_color is set to NULL, color won't be changed to print the sprite.
+ * @param char_table Set of characters that can be drawn by sprite's functions. No '\0' are required (by copy).
+ * @param txt_color  Color used for the text (by copy) if txt_color is set to NULL, color won't be changed to print the sprite.
+ * @param bg_color   Color used for the background (by copy) if bg_color is set to NULL, color won't be changed to print the sprite.
  * @return           The created sprite.
  */
-io_Sprite* io_newSprite(unsigned short x_len, unsigned short y_len, char** char_table, char* txt_colors, char* bg_color);
+io_Sprite* io_newSprite(unsigned short x_len, unsigned short y_len, char** char_table, char* txt_color, char* bg_color);
+
+/**
+ * @brief Sets the position of the sprite
+ * @param sprite Sprite to set
+ * @param coord  New coordinates for the sprite
+ * @return       The sprite
+ */
+io_Sprite* io_setPosition(io_Sprite* sprite, io_Coordinates coord);
 
 /**
  * @brief Deletes an io_Sprite
@@ -69,13 +77,13 @@ io_Sprite* io_deleteSprite(io_Sprite* sprite);
  * @param print_space TRUE to print spaces, FALSE otherwise
  * @return            The sprite
  */
-io_Sprite* io_printSpaces(io_Sprite* sprite, IO_BOOL print_spaces);
+io_Sprite* io_printSpaces(io_Sprite* sprite, bool print_spaces);
 
 /**
  * @brief Changes the sprite's color
  * @param sprite    Sprite to edit
- * @param txt_color Color used for the text (address will be used). If txt_color is set to NULL, color won't be changed to print the sprite.
- * @param bg_color  Color used for the background (address will be used). If bg_color is set to NULL, color won't be changed to print the sprite.
+ * @param txt_color Color used for the text (by copy). If txt_color is set to NULL, color won't be changed to print the sprite.
+ * @param bg_color  Color used for the background (by copy). If bg_color is set to NULL, color won't be changed to print the sprite.
  * @return          The sprite
  */
 io_Sprite* io_changeSpriteColor(io_Sprite* sprite, char* txt_color, char* bg_color);
@@ -95,6 +103,13 @@ io_Sprite* io_changeSpriteColor(io_Sprite* sprite, char* txt_color, char* bg_col
  * @retun             The sprite
  */
 io_Sprite* io_usePartOfSprite(io_Sprite* sprite, io_Coordinates drawing_beg, io_Coordinates drawing_end);
+
+/**
+ * @brief Revoke io_usePartOfSprite effects
+ * @param sprite The sprite to set
+ * @return       The sprite
+ */
+io_Sprite* io_useAll(io_Sprite* sprite);
 
 /**
  * @brief Does the same than io_usePartOfSprite, but clears the sprite first

@@ -24,6 +24,7 @@
  ***********************************************************************/
 
 #include <io/sprite_display.h>
+#include <io/all.h>
 
 void io_printSprite(const io_Sprite* sprite){
 	char origin_bg_color[14];
@@ -38,16 +39,30 @@ void io_printSprite(const io_Sprite* sprite){
 		io_setTextColor(sprite->txt_color);
 	}
 
-	if (sprite->draw_spaces) {
-		unsigned short i = 0, j;
-		for (i = sprite->drawing_start_coo.y ; i <  sprite->drawing_end_coo.y ; ++i) {
-			io_setCursorPos(sprite->current_position.x, i + sprite->current_position.y - sprite->drawing_start_coo.y);
-			for (j = sprite->drawing_start_coo.x ; j < sprite->drawing_end_coo.x ; ++j) {
+	unsigned short x_start_sp, x_end_sp, y_start_sp, y_end_sp;
+	if (sprite->draw_part){
+		x_start_sp = sprite->drawing_start_coo.x;
+		y_start_sp = sprite->drawing_start_coo.y;
+		x_end_sp   = sprite->drawing_end_coo.x;
+		y_end_sp   = sprite->drawing_end_coo.y;
+	}
+	else{
+		x_start_sp = 0;
+		y_start_sp = 0;
+		x_end_sp   = sprite->x_size;
+		y_end_sp   = sprite->y_size;
+	}
+
+	if (!sprite->draw_spaces) {
+		unsigned short i, j;
+		for (i = y_start_sp ; i <  y_end_sp ; ++i) {
+			io_setCursorPos(sprite->current_position.x, i + sprite->current_position.y - y_start_sp);
+			for (j = x_start_sp ; j < x_end_sp ; ++j) {
 				if (sprite->char_table[i][j] != ' ') {
 					printf("%c", sprite->char_table[i][j]);
 				}
 				else {
-					io_setCursorPos(sprite->current_position.x + j - sprite->drawing_start_coo.x, i + sprite->current_position.y - sprite->drawing_start_coo.y);
+					io_setCursorPos((unsigned short) (sprite->current_position.x + j + 1 - x_start_sp), i + sprite->current_position.y - y_start_sp);
 				}
 			}
 
@@ -55,9 +70,9 @@ void io_printSprite(const io_Sprite* sprite){
 	}
 	else {
 		unsigned short i = 0, j;
-		for ( i = sprite->drawing_start_coo.y ; i < sprite->drawing_end_coo.y ; ++i) {
-			io_setCursorPos(sprite->current_position.x, i + sprite->current_position.y - sprite->drawing_start_coo.y);
-			for ( j = sprite->drawing_start_coo.x ; j < sprite->drawing_end_coo.x ; ++j) {
+		for ( i = y_start_sp ; i < y_end_sp ; ++i) {
+			io_setCursorPos(sprite->current_position.x, i + sprite->current_position.y - y_start_sp);
+			for ( j = x_start_sp ; j < x_end_sp ; ++j) {
 				printf("%c", sprite->char_table[i][j]);
 			}
 		}
@@ -86,13 +101,14 @@ void io_clearSprite(const io_Sprite* sprite){
 	}
 }
 
+/* TODO : Optimize */
 void io_moveSpriteTo(io_Sprite* sprite, io_Coordinates coordinates){
 	io_clearSprite(sprite);
 	sprite->current_position = coordinates;
 	io_printSprite(sprite);
 }
 
-/* OPTIMIZE ME */
+/* TODO : Optimize */
 void io_moveSpriteRelativ(io_Sprite* sprite, int x, int y){
 	io_clearSprite(sprite);
 	sprite->current_position.x += x;
@@ -101,7 +117,7 @@ void io_moveSpriteRelativ(io_Sprite* sprite, int x, int y){
 }
 
 void io_centerPrintSprite(io_Sprite* sprite){
-	sprite->current_position.x = (io_consoleWidth() - sprite->drawing_end_coo.x + sprite->drawing_start_coo.x) / 2;
-	sprite->current_position.y = (io_consoleHeight() - sprite->drawing_end_coo.y + sprite->drawing_start_coo.y) / 2;
+	sprite->current_position.x = (unsigned short) ((io_consoleWidth() - sprite->drawing_end_coo.x + sprite->drawing_start_coo.x) / 2);
+	sprite->current_position.y = (unsigned short) ((io_consoleHeight() - sprite->drawing_end_coo.y + sprite->drawing_start_coo.y) / 2);
 	io_printSprite(sprite);
 }

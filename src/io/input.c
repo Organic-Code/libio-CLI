@@ -27,13 +27,15 @@
 #include <io/cursor.h>
 #include <io/console_management.h>
 
-IO_BOOL io_yes(char* question, char default_ans)
+static char io_get(unsigned char vmin, unsigned char tmin);
+
+bool io_yes(char* question, char default_ans)
 {
 	char answer;
 	printf("%s [%c/%c]", question, default_ans == 1 ? 'Y' : 'y', default_ans == -1 ? 'N' : 'n');
-	io_setEcho(IO_FALSE);
+	io_setEcho(false);
 	do {
-		answer = io_instantGetChar();
+		answer = io_getChar();
 		answer = (char)tolower(answer);
 		if (default_ans == 1) {
 			if (answer != 'n') {
@@ -48,12 +50,12 @@ IO_BOOL io_yes(char* question, char default_ans)
 
 		}
 	}while (answer != 'y' && answer != 'n');
-	io_setEcho(IO_TRUE);
+	io_setEcho(true);
 	printf("%c\n", answer);
-	return answer == 'y' ? IO_TRUE : IO_FALSE;
+	return answer == 'y' ? true : false;
 
 }
-char* io_getNumber(unsigned char i_base, IO_BOOL with_brackets)
+char* io_getNumber(unsigned char i_base, bool with_brackets)
 {
 	unsigned short x_cursor_pos = 0;
 	char user_input;
@@ -64,7 +66,7 @@ char* io_getNumber(unsigned char i_base, IO_BOOL with_brackets)
 	else
 		i_base = (unsigned char)(i_base + '0');
 
-	io_setEcho( IO_FALSE );
+	io_setEcho( false );
 
 	if (with_brackets)
 	{
@@ -75,7 +77,7 @@ char* io_getNumber(unsigned char i_base, IO_BOOL with_brackets)
 
 	do
 	{
-		user_input = io_instantGetChar();
+		user_input = io_getChar();
 		user_input = (char)toupper(user_input);
 
 		/* Clearing any error message from the previous loop */
@@ -137,7 +139,7 @@ char* io_getNumber(unsigned char i_base, IO_BOOL with_brackets)
 		printf("] ");
 	printf("\n");
 
-	io_setEcho( IO_TRUE );
+	io_setEcho( true );
 
 	if (x_cursor_pos > 1 || (x_cursor_pos > 0 && !with_brackets)) /* if the char* is not empty */
 	{
@@ -152,7 +154,7 @@ char* io_getNumber(unsigned char i_base, IO_BOOL with_brackets)
 	}
 }
 
-char io_instantGetChar()
+static char io_get(unsigned char vmin, unsigned char tmin)
 {
 	char key;
 	struct termios original_settings, new_settings;
@@ -161,8 +163,8 @@ char io_instantGetChar()
 	new_settings = original_settings;
 
 	new_settings.c_lflag &= ~ICANON;        /* Allow getchar() to return without waiting '\n' */
-	new_settings.c_cc[VMIN] = 1;            /* getchar() should read only 1 character */
-	new_settings.c_cc[VTIME] = 0;           /* getchar() should wait for an input, forever. */
+	new_settings.c_cc[VMIN] = vmin;            /* getchar() should read only 1 character */
+	new_settings.c_cc[VTIME] = tmin;           /* getchar() should wait for an input, forever. */
 	tcsetattr(0, TCSANOW, &new_settings);   /* applies the new settings */
 
 	key = (char)getchar();
@@ -171,13 +173,23 @@ char io_instantGetChar()
 	return key;
 }
 
+char io_getChar()
+{
+	return io_get(1, 0);
+}
+
+char io_getCharTimed(unsigned char timeout)
+{
+	return io_get(0, timeout);
+}
+
 unsigned long int io_getNumberWithinRange(unsigned long int min, unsigned long int max)
 {
 	char* input = NULL;
 	unsigned long int output;
 
 	do {
-		input = io_getNumber(10, IO_FALSE);
+		input = io_getNumber(10, false);
 		if (!io_isWithinRange(input, min, max, 10)) {
 			printf("                                                     \r");
 			free(input);
@@ -190,21 +202,21 @@ unsigned long int io_getNumberWithinRange(unsigned long int min, unsigned long i
 	return output;
 }
 
-IO_BOOL io_isWithinRange(char* val, unsigned long int min, unsigned long int max, unsigned char base)
+bool io_isWithinRange(char* val, unsigned long int min, unsigned long int max, unsigned char base)
 {
 	unsigned long int value;
 
 	if (val == NULL)
-		return IO_FALSE;
+		return false;
 	else
 	{
 		value = strtoul( val, NULL, base );
 
 		if (value < min)
-			return IO_FALSE;
+			return false;
 		else if (value > max)
-			return IO_FALSE;
+			return false;
 		else
-			return IO_TRUE;
+			return true;
 	}
 }
