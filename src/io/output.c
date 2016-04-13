@@ -24,25 +24,141 @@
  ***********************************************************************/
 
 #include <io/output.h>
- 
+
 void io_clear()
 {
 	printf("\033[2J");	/* ANSI escape for clearing the screen */
 	io_setCursorPos( 0, 0);
+	fflush(stdout);
 }
 
-void io_centerPrint(const char* text, unsigned short y_pos)
+void io_print(int options, unsigned short y_pos, char key, const char* format, ...)
 {
-	unsigned short char_length = (unsigned short)strlen(text);
-	unsigned short console_width = io_consoleWidth();
-
-	if (char_length <= console_width)
-	{
-		io_setCursorPos((unsigned short)((console_width-char_length)/2), y_pos); /* sets the x cursor's coordinate at the center minus half of the char length. */
-		printf("%s", text);
+	char text[512];
+	va_list valist;
+	va_start(valist, format);
+	unsigned char char_length;
+	if ((char_length = vsprintf(text, format, valist)) < 0){
+		va_end(valist);
+		return;
 	}
-}
+	va_end(valist);
+    unsigned short x_pos;
 
+    if (options & IO_CENTER){
+        unsigned short console_width = io_consoleWidth();
+
+        assert(char_length <= console_width);
+        x_pos = (unsigned short) ((console_width - char_length) / 2);
+        io_setCursorPos(x_pos, y_pos); /* sets the x cursor's coordinate at the center minus half of the char length. */
+    } else if (options & IO_RIGHT){
+        unsigned short console_width = io_consoleWidth();
+
+        assert(char_length <= console_width);
+        x_pos = console_width - char_length;
+        io_setCursorPos(x_pos , y_pos); /* sets the x cursor's coordinate at the center minus half of the char length. */
+    } else {
+        x_pos = 1;
+        io_setCursorPos(1 , y_pos);
+    }
+
+    if (options & IO_BLINK){
+        char press;
+        unsigned short i;
+		fflush(stdin);
+
+        if (options & IO_TYPEWRITE){
+            unsigned short j = 1;
+            do {
+				struct timeb t1, t2;
+                io_setCursorPos(x_pos, y_pos);
+                for (i = 0 ; i < j ; ++i) {
+                    printf("%c", text[i]);
+                    fflush(stdout);
+                }
+				ftime(&t1);
+                press = io_getCharTimed(5);
+				if (key == 0 && press != -1){
+					press = key;
+				}
+
+				if (press != -1 && press != key){
+					ftime(&t2);
+					unsigned int time_enlapsed = (unsigned int)fabs(t2.millitm - t1.millitm);
+					if (time_enlapsed < 500) {
+						usleep((500 - time_enlapsed) * 1000);
+					}
+				}
+				io_setCursorPos(x_pos, y_pos);
+				for (i = 0 ; i < j ; ++i){
+					printf(" ");
+				}
+				fflush(stdout);
+				if (press != key) {
+					ftime(&t1);
+					press = io_getCharTimed(5);
+					if (key == 0 && press != -1) {
+						press = 0;
+					}
+
+					if (press != -1 && press != key){
+						ftime(&t2);
+						unsigned int time_enlapsed = (unsigned int)fabs(t2.millitm - t1.millitm);
+						if (time_enlapsed < 500) {
+							usleep((500 - time_enlapsed) * 1000);
+						}
+					}
+				}
+                j += 2;
+				if (j > char_length){
+					j = char_length;
+				}
+            }while(press != key);
+		}
+        else{
+            do {
+                io_setCursorPos(x_pos, y_pos);
+                printf("%s", text);
+                fflush(stdout);
+                press = io_getCharTimed(5);
+				if (key == 0 && press != -1){
+					press = 0;
+				}
+                io_setCursorPos(x_pos, y_pos);
+                for (i = 0 ; i < char_length ; ++i){
+					printf(" ");
+				}
+				fflush(stdout);
+				if (press != key) {
+					press = io_getCharTimed(5);
+					if (key == 0 && press != -1) {
+						press = 0;
+					}
+				}
+            }while(press != key);
+        }
+    }
+    else{
+        if (options & IO_TYPEWRITE){
+            bool previous_param = io_cursorVisible();
+            io_visibleCursor(true);
+            unsigned short i;
+			char press = -1;
+            for (i = 0 ; i < char_length ; ++i) {
+                printf("%c", text[i]);
+                fflush(stdout);
+				if (press != key){
+					press = io_getCharTimed(1);
+				}
+            }
+            io_visibleCursor(previous_param);
+        }
+        else{
+            printf("%s", text);
+            fflush(stdout);
+        }
+    }
+}
 unsigned char io_menu(const char* choices, const char* title, unsigned char default_choice, char alignement, const char* text_color, const char* bg_color, const char* border_color)
 {
 	const char** text;
@@ -105,14 +221,19 @@ unsigned char io_menu(const char* choices, const char* title, unsigned char defa
 		++j; /* the next string starts right after that */
 	}
 
-	j = (unsigned short)strlen(title);
+	if (title != NULL) {
+		j = (unsigned short) strlen(title);
+	}
+	else{
+		j = 0;
+	}
 	if (j > max_length) {
 		max_length = j;
 	}
 
 	x_text = (unsigned short*) calloc(nb_choices, sizeof(unsigned short));
 	y_text = (unsigned short*) calloc(nb_choices, sizeof(unsigned short));
-	x_box = (unsigned short)(term_width - max_length - 2) / 2;
+	x_box = (unsigned short)((term_width - max_length - 2) / 2);
 	y_box = (unsigned short)((term_height - nb_choices - 2) / 2);
 
 	/* Border */
@@ -130,7 +251,7 @@ unsigned char io_menu(const char* choices, const char* title, unsigned char defa
 	}
 
 	if (title != NULL) {
-		io_centerPrint(title, (unsigned short)(y_box-1));
+		io_print(IO_CENTER, (unsigned short)(y_box-1), 0, title);
 	}
 
 	io_setBgColor(bg_color);

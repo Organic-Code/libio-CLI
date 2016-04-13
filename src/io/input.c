@@ -24,13 +24,12 @@
  ***********************************************************************/
 
 #include <io/input.h>
-#include <io/cursor.h>
-#include <io/console_management.h>
 
-static char io_get(unsigned char vmin, unsigned char tmin);
+static char io_getInput(unsigned char vmin, unsigned char tmin);
 
 bool io_yes(char* question, char default_ans)
 {
+	assert(question != NULL);
 	char answer;
 	printf("%s [%c/%c]", question, default_ans == 1 ? 'Y' : 'y', default_ans == -1 ? 'N' : 'n');
 	io_setEcho(false);
@@ -101,6 +100,7 @@ char* io_getNumber(unsigned char i_base, bool with_brackets)
 					--x_cursor_pos;
 
 					output = (char*) realloc(output, (unsigned)(x_cursor_pos - (with_brackets ? 1 : 0))*sizeof(char)); /* Desallocating 1 char */
+					assert(output != NULL);
 				}
 			}
 			else
@@ -129,6 +129,7 @@ char* io_getNumber(unsigned char i_base, bool with_brackets)
 						printf("%c", user_input);
 					++x_cursor_pos;
 					output = (char*) realloc(output, (unsigned)(x_cursor_pos - (with_brackets ? 1 : 0))*sizeof(char)); /* Allocating 1 extra char */
+					assert(output != NULL);
 					output[x_cursor_pos - 1 - (with_brackets ? 1 : 0)] = user_input; /* Adding 'user_input' at the end of the array */
 				}
 				user_input = 0;
@@ -144,6 +145,7 @@ char* io_getNumber(unsigned char i_base, bool with_brackets)
 	if (x_cursor_pos > 1 || (x_cursor_pos > 0 && !with_brackets)) /* if the char* is not empty */
 	{
 		output = (char*) realloc(output, (unsigned)(x_cursor_pos + 1 - (with_brackets ? 1 : 0))*sizeof(char));
+		assert(output != NULL);
 		output[x_cursor_pos - (with_brackets ? 1 : 0)] = '\0';
 		return output;
 	}
@@ -154,7 +156,7 @@ char* io_getNumber(unsigned char i_base, bool with_brackets)
 	}
 }
 
-static char io_get(unsigned char vmin, unsigned char tmin)
+static char io_getInput(unsigned char vmin, unsigned char tmin)
 {
 	char key;
 	struct termios original_settings, new_settings;
@@ -175,27 +177,32 @@ static char io_get(unsigned char vmin, unsigned char tmin)
 
 char io_getChar()
 {
-	return io_get(1, 0);
+	return io_getInput(1, 0);
 }
 
 char io_getCharTimed(unsigned char timeout)
 {
-	return io_get(0, timeout);
+	return io_getInput(0, timeout);
 }
 
 unsigned long int io_getNumberWithinRange(unsigned long int min, unsigned long int max)
 {
+	assert (max > min);
 	char* input = NULL;
 	unsigned long int output;
+	unsigned char max_digit_nbr = (unsigned char) (1 + log10(max)), i;
 
 	do {
 		input = io_getNumber(10, false);
 		if (!io_isWithinRange(input, min, max, 10)) {
-			printf("                                                     \r");
+			printf("\r");
+			for (i = 0 ; i < max_digit_nbr ; ++i)
+				printf(" ");
+			printf("\r");
 			free(input);
 			input = NULL;
 		}
-	}while (input == 0);
+	}while (input == NULL);
 
 	output = strtoul(input, NULL, 10);
 	free(input);
@@ -204,19 +211,15 @@ unsigned long int io_getNumberWithinRange(unsigned long int min, unsigned long i
 
 bool io_isWithinRange(char* val, unsigned long int min, unsigned long int max, unsigned char base)
 {
+	assert(val != NULL && min < max && base > 0 && base < 37);
 	unsigned long int value;
 
-	if (val == NULL)
+	value = strtoul( val, NULL, base );
+
+	if (value < min)
+		return false;
+	else if (value > max)
 		return false;
 	else
-	{
-		value = strtoul( val, NULL, base );
-
-		if (value < min)
-			return false;
-		else if (value > max)
-			return false;
-		else
-			return true;
-	}
+		return true;
 }

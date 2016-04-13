@@ -25,6 +25,14 @@ typedef struct{
 	char* txt_color; /*!< Color for the sprite's text. NULL for no particular color */
 	char* bg_color; /*!< Color for the sprite's background. NULL for no particular color */
 	bool draw_spaces; /*!< true if displays functions should print the spaces, false otherwise. */
+
+	bool is_spriteSheet; /*!< true if created the sprite with io_newSpriteSheet. */
+	unsigned short sprite_width; /*!< Width of a sprite in a sprite sheet. */
+	unsigned short sprite_height; /*!< Height of a sprite in a sprite sheet. */
+	unsigned char x_sprite_nbr; /*!< Number of sprites in a line. */
+	unsigned char y_sprite_nbr; /*!< Number of sprites in a column. */
+	unsigned char  x_current_sprite;   /*!< Line of the currently selected sprite. */
+	unsigned char  y_current_sprite;   /*!< Column of the currently selected sprite. */
 }io_Sprite;
 
 #endif /* IO_SPRITE_H_INCLUDED */

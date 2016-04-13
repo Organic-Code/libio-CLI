@@ -23,15 +23,15 @@
  ************************************************************************************************************/
 
 #include <io/all.h>
-#include <io/sprite_struct.h>
+#include <sample/game.h>
 
-int main(void);
+int main(int argc, char* argv[]);
 void basic_sample(void);
 void geometry_sample(void);
 void sprites_sample(void);
 
 
-int main()
+int main(int argc, char* argv[])
 {
 	unsigned char ans = 0;
 
@@ -43,7 +43,7 @@ int main()
         io_setTextAttributes("+bold");
 
         //Invoking a basic menu with a title
-		ans = io_menu("Geometry\0Basic\0Sprites\0Quit\0", "This is not a menu", ans, IO_CENTER, "white", "blue", "grey");
+		ans = io_menu("- Geometry\0- Basic\0- Sprites\0- Game demo\0Quit\0", "This is not a menu", ans, IO_LEFT, "white", "blue", "grey");
 
 		switch(ans){
 		case 0:
@@ -53,7 +53,11 @@ int main()
 			basic_sample();
 			break;
 		case 2:
-			sprites_sample();
+            sprites_sample();
+            break;
+        case 3:
+            startGame();
+            break;
 		default:
 			break;
 		}
@@ -61,7 +65,7 @@ int main()
         // It is important to reset the colors before clearing the screen, otherwise you may not have the default clearing color (for instance, you may have some green, purple,...)
         io_setTextAttributes("reset");
         io_clear();
-	}while(ans != 3);
+	}while(ans != 4);
 
     io_visibleCursor(true);
     io_setEcho(true);
@@ -83,18 +87,20 @@ void basic_sample(){
 
 	io_visibleCursor(false);
 	io_setEcho(false);
-	do{
-		io_setTextAttributes("reset");
-		io_clear();
-		io_setBgColor(colors[bgcol]);
-		io_setTextColor(colors[txtcol]);
-		io_setCursorPos(text.x, text.y);
-		printf("Use WASD to move and +/- to change colors (q to quit)");
-		key = (char) toupper(io_getChar());
+	do {
+        io_setTextAttributes("reset");
+        io_clear();
+        io_setBgColor(colors[bgcol]);
+        io_setTextColor(colors[txtcol]);
+        io_setCursorPos(text.x, text.y);
+        printf("Use WASD to move and +/- to change colors (q to quit)");
+        key = (char) toupper(io_getChar());
 
-        //Avoiding people pressing arrow up (arrow up sends IO_SPECIAL_CHAR (escape), then A)
-        if (key == IO_SPECIAL_CHAR)
+        // Avoiding people pressing arrow up (arrow up sends IO_SPECIAL_CHAR (escape), then '[', then A) or others non-char keys
+        if (key == IO_SPECIAL_CHAR){
+            io_getCharTimed(0); // Using timed so that if the user pressed escape, we don't get stuck
             io_getCharTimed(0);
+        }
 
 		switch (key){
 		case 'W':
@@ -138,8 +144,8 @@ void geometry_sample(){
 	io_setBgColor("black");
 	io_clear();
 
-	coo = io_setCoordinates((unsigned short) (io_consoleWidth() / 3), 0);
-	coo2 = io_setCoordinates((unsigned short) (2 * io_consoleWidth() / 3 + 1), (unsigned short) (io_consoleHeight() / 3));
+	coo = io_coordinates((unsigned short) (io_consoleWidth() / 3), 0);
+	coo2 = io_coordinates((unsigned short) (2 * io_consoleWidth() / 3 + 1), (unsigned short) (io_consoleHeight() / 3));
 	io_setBgColor("cyan");
 	io_drawFilledRectangle(coo, coo2, ' ');
 
@@ -155,24 +161,24 @@ void geometry_sample(){
 		io_drawLine(coo4, coo3, ' ');
 	}
 
-	coo = io_setCoordinates(io_consoleWidth(), io_consoleHeight());
-	coo2 = io_setCoordinates(0,0);
+	coo = io_coordinates(io_consoleWidth(), io_consoleHeight());
+	coo2 = io_coordinates(0, 0);
 	io_setBgColor("grey");
 	io_drawLine(coo, coo2, ' ');
 
-	coo = io_setCoordinates(io_consoleWidth(), 0);
-	coo2 = io_setCoordinates(0, io_consoleHeight());
+	coo = io_coordinates(io_consoleWidth(), 0);
+	coo2 = io_coordinates(0, io_consoleHeight());
 	io_drawLine(coo, coo2, ' ');
 	
-	coo = io_setCoordinates((unsigned short) (io_consoleWidth() / 3), (unsigned short) (io_consoleHeight() / 3));
-	coo2 = io_setCoordinates((unsigned short) (2 * io_consoleWidth() / 3), (unsigned short) (2 * io_consoleHeight() / 3));
+	coo = io_coordinates((unsigned short) (io_consoleWidth() / 3), (unsigned short) (io_consoleHeight() / 3));
+	coo2 = io_coordinates((unsigned short) (2 * io_consoleWidth() / 3), (unsigned short) (2 * io_consoleHeight() / 3));
 	io_setBgColor("blue");
 	io_drawFilledRectangle(coo, coo2, ' ');
 
 	io_setBgColor("light grey");
 	io_drawRectangle(coo, coo2, ' ');
 
-	coo = io_setCoordinates((unsigned short) (io_consoleWidth() / 2), (unsigned short) (io_consoleHeight() / 2));
+	coo = io_coordinates((unsigned short) (io_consoleWidth() / 2), (unsigned short) (io_consoleHeight() / 2));
 
 	io_drawCircle(coo, 5, ' ');
 	io_setBgColor("red");
@@ -186,13 +192,16 @@ void geometry_sample(){
 	io_drawCircle(coo, 8, ' ');
 
 	io_setEcho(true);
-	if (io_getChar() == IO_SPECIAL_CHAR)
-		(void) io_getCharTimed(0);
+	if (io_getChar() == IO_SPECIAL_CHAR){
+        io_getCharTimed(0);
+        io_getCharTimed(0);
+    }
 	io_visibleCursor(true);
 }
 
 void sprites_sample(){
 	io_setTextAttributes("reset");
+    io_setBgColor("black");
 	io_clear();
     io_setEcho(false);
     io_visibleCursor(false);
@@ -208,44 +217,72 @@ void sprites_sample(){
                 "|   oo   |",
                 "| o    o |",
                 "x--------x"
-            };
+            },* yoloSpriteSheet[] = {
+			"  _o_    _o_    _o__  __o_  ",
+			"^(o.o)^v(o.o)v<(o.o<)(>o.o)>"
+	};
     io_Sprite* yolo = io_newSprite(10, 10, yolosprite, "light blue", NULL);
-    yolo = io_setPosition(yolo, io_setCoordinates(4,4));
-    io_printSprite(yolo);
+	io_Sprite* heroe = io_newSpriteSheet(7, 2, yoloSpriteSheet, "green", NULL, 4, 1);
+    heroe = io_setPosition(heroe, io_coordinates(30,10));
+    yolo = io_setPosition(yolo, io_coordinates(4, 4));
+    io_printSprite(heroe);
     char key;
     do {
+        io_printSprite(yolo);
         key = (char) toupper(io_getChar());
 
-        //Avoiding people pressing arrow up (arrow up sends IO_SPECIAL_CHAR (escape), then A)
-        if (key == IO_SPECIAL_CHAR)
+        //Avoiding people pressing arrows (arrow up sends IO_SPECIAL_CHAR (escape), then '[', then 'A')
+        if (key == IO_SPECIAL_CHAR){
             io_getCharTimed(0);
+            io_getCharTimed(0);
+        }
 
         switch (key){
             case 'W':
-                if (yolo->current_position.y > 0) {
-                    io_moveSpriteRelativ(yolo, 0, -1);
+                io_clearSprite(heroe);
+                heroe = io_spriteSheet_setSprite(heroe, 0, 0);
+                if (heroe->current_position.y > 0) {
+                    io_moveSpriteRelativ(heroe, 0, -1);
+                }
+                else {
+                    io_printSprite(heroe);
                 }
                 break;
             case 'A':
-                if (yolo->current_position.x > 0) {
-                    io_moveSpriteRelativ(yolo, -1, 0);
+                io_clearSprite(heroe);
+                heroe = io_spriteSheet_setSprite(heroe, 2, 0);
+                if (heroe->current_position.x > 0) {
+                    io_moveSpriteRelativ(heroe, -1, 0);
+                }
+                else {
+                    io_printSprite(heroe);
                 }
                 break;
             case 'S':
-                if (yolo->current_position.y < io_consoleHeight() - yolo->y_size) {
-                    io_moveSpriteRelativ(yolo, 0, 1);
+                io_clearSprite(heroe);
+                heroe = io_spriteSheet_setSprite(heroe, 1, 0);
+                if (heroe->current_position.y < io_consoleHeight() - heroe->sprite_height) {
+                    io_moveSpriteRelativ(heroe, 0, 1);
+                }
+                else {
+                    io_printSprite(heroe);
                 }
                 break;
             case 'D':
-                if (yolo->current_position.x < io_consoleWidth() - yolo->x_size) {
-                    io_moveSpriteRelativ(yolo, 1, 0);
+                io_clearSprite(heroe);
+                heroe = io_spriteSheet_setSprite(heroe, 3, 0);
+                if (heroe->current_position.x < io_consoleWidth() - heroe->sprite_width) {
+                    io_moveSpriteRelativ(heroe, 1, 0);
+                }
+                else {
+                    io_printSprite(heroe);
                 }
             default:
                 break;
         }
     }while(key != 'Q');
+	io_deleteSprite(yolo);
+    io_deleteSpriteSheet(heroe);
     io_setEcho(true);
-	if (io_getChar() == IO_SPECIAL_CHAR)
-		(void) io_getCharTimed(0);
     io_visibleCursor(true);
 }

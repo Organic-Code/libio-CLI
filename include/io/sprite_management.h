@@ -37,6 +37,7 @@
 
 #include <stdbool.h>
 #include <stdlib.h>
+#include <assert.h>
 #include <io/sprite_struct.h>
 #include <io/sprite_display.h>
 #include <math.h>
@@ -56,6 +57,42 @@
 io_Sprite* io_newSprite(unsigned short x_len, unsigned short y_len, char** char_table, char* txt_color, char* bg_color);
 
 /**
+ * @brief Creates a new sprite sheet.
+ * @param x_len        Number of columns in a single sprite
+ * @param y_len        Number of lines in a sprite
+ * @param char_table   Set of characters that can be drawn by sprite's functions. No '\0' are required (by copy).
+ * @param txt_color    Color used for the text (by copy) if txt_color is set to NULL, color won't be changed to print the sprite.
+ * @param bg_color     Color used for the background (by copy) if bg_color is set to NULL, color won't be changed to print the sprite.
+ * @param x_sprite_nbr Number of sprites (horizontally)
+ * @param y_sprite_nbr Number of sprites (vertically)
+ * @return             The created sprite.
+ */
+io_Sprite* io_newSpriteSheet(unsigned short x_len, unsigned short y_len, char** char_table, char* txt_color, char* bg_color, unsigned char x_sprite_nbr, unsigned char y_sprite_nbr);
+
+
+/**
+ * @brief Changes the sprite to use in a sprite sheet
+ * @param sprite The sprite to edit
+ * @param x_nbr  The number of the sprite to use (horizontal)
+ * @param y_nbr  The number of the sprite to use (vertical)
+ * @return       The edited sprite
+ */
+io_Sprite* io_spriteSheet_setSprite(io_Sprite* sprite, unsigned char x_nbr, unsigned char y_nbr);
+
+/**
+ * @brief Changes the sprite to use in a sprite sheet by taking the next one (horizontally). Loops back to the first sprite if required
+ * @param sprite The sprite to edit
+ * @return       The edited sprite
+ */
+io_Sprite* io_spriteSheet_nextSprite(io_Sprite* sprite);
+/**
+ * @brief Changes the sprite to use in a sprite sheet by taking the next one (vertically). Loops back to the first sprite if required
+ * @param sprite The sprite to edit
+ * @return       The edited sprite
+ */
+io_Sprite* io_spriteSheet_nextSpriteVertical(io_Sprite* sprite);
+
+/**
  * @brief Sets the position of the sprite
  * @param sprite Sprite to set
  * @param coord  New coordinates for the sprite
@@ -69,6 +106,13 @@ io_Sprite* io_setPosition(io_Sprite* sprite, io_Coordinates coord);
  * @return       NULL
  */
 io_Sprite* io_deleteSprite(io_Sprite* sprite);
+
+/**
+ * @brief Deletes a sprite sheet. (same as io_deleteSprite)
+ * @param sprite Concerned sprite
+ * @return       NULL
+ */
+io_Sprite* io_deleteSpriteSheet(io_Sprite* sprite);
 
 /**
  * @brief Sets wether you want to print the spaces within a sprite or not

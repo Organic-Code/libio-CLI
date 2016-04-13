@@ -36,6 +36,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
 #include <io/console_management.h>
 #include <io/cursor.h>
 #include <io/sprite_struct.h>

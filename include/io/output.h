@@ -35,17 +35,25 @@
 
 /*! code corresponding to ESC */
 #define IO_SPECIAL_CHAR 0x001B
-/*! io_menu(...) : align to the left */
-#define IO_LEFT 0
-/*! io_menu(...) : center */
-#define IO_CENTER 1
-/*! io_menu(...) : align to the right */
-#define IO_RIGHT 2
+/*! io_menu(...) or io_print  : align to the left */
+#define IO_LEFT 1
+/*! io_menu(...) or io_print  : center */
+#define IO_CENTER 2
+/*! io_menu(...) or io_print : align to the right */
+#define IO_RIGHT 4
+/*! io_print : the text is blinking until a given key is pressed */
+#define IO_BLINK 8
+/*! io_print : the text is written char by char, with a little pause */
+#define IO_TYPEWRITE 16
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <assert.h>
+#include <time.h>
+#include <stdarg.h>
+#include <sys/timeb.h>
 #include <io/cursor.h>
 #include <io/console_management.h>
 #include <io/input.h>
@@ -56,11 +64,15 @@
 void io_clear(void);
 
 /**
- * @brief Prints a text at the center of the screen, given its height. Will output nothing if the screen's width is smaller than the text to print
- * @param text  Text to print at the screen
- * @param y_pos Height of the text to print
+ * @brief Prints a text in a formated way. nb : only for strings with at most 512 characters (TTY usually have at most 250 columns)
+ * @param option Options for printing the text. Usable options: IO_BLINK, IO_TYPEWRITE, IO_CENTER, IO_LEFT, IO_RIGHT (for blinking centered text, use the argument 'IO_BLINK | IO_CENTER'). See define for more information
+ *                  Note that IO_BLINK can be used only if either IO_CENTER, IO_LEFT or IO_RIGHT is set
+ * @param y_pos  Height of the text to print.
+ * @param key    If IO_BLINK is set, the text will blink until this key is pressed. If set to 0, any key press will work.
+ *                  If IO_TYPEWRITE is set, the text will be printed instantly displayed. If set to 0, any key press will work.
+ * @param format String formatted in the printf way.
  */
-void io_centerPrint(const char* text, unsigned short y_pos);
+void io_print(int options, unsigned short y_pos, char key, const char* format, ...);
 
 /* input & output */
 

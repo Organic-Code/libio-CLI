@@ -56,10 +56,12 @@ io_Sprite* io_newSprite(unsigned short x_len, unsigned short y_len, char** char_
 	newsp->x_size = x_len;
 	newsp->y_size = y_len;
 
+	assert(char_table != NULL);
     newsp->char_table = (char**) malloc(y_len * sizeof(char*));
     unsigned short i = 0;
     for (; i < y_len ; ++i){
         newsp->char_table[i] = (char*) malloc(x_len * sizeof(char));
+		assert(char_table[i] != NULL);
         strcpy(newsp->char_table[i], char_table[i]);
     }
 
@@ -77,8 +79,53 @@ io_Sprite* io_newSprite(unsigned short x_len, unsigned short y_len, char** char_
 
 	newsp->draw_spaces = false;
 	newsp->draw_part = false;
+	newsp->is_spriteSheet = false;
 
 	return newsp;
+}
+
+io_Sprite* io_newSpriteSheet(unsigned short x_len, unsigned short y_len, char** char_table, char* txt_color, char* bg_color, unsigned char x_sprite_nbr, unsigned char y_sprite_nbr)
+{
+    io_Sprite* newsp = io_newSprite(x_sprite_nbr * x_len, y_sprite_nbr* y_len, char_table, txt_color, bg_color);
+    newsp->draw_part = true;
+    newsp->is_spriteSheet = true;
+    newsp->drawing_start_coo = io_coordinates(0, 0);
+    newsp->drawing_end_coo = io_coordinates(x_len, y_len);
+    newsp->sprite_height = y_len;
+    newsp->sprite_width = x_len;
+    newsp->x_sprite_nbr = x_sprite_nbr;
+    newsp->y_sprite_nbr = y_sprite_nbr;
+    newsp->x_current_sprite = 0;
+    newsp->y_current_sprite = 0;
+    return newsp;
+}
+
+io_Sprite* io_spriteSheet_setSprite(io_Sprite* sprite, unsigned char x_nbr, unsigned char y_nbr)
+{
+    assert(x_nbr <= sprite->x_sprite_nbr && y_nbr <= sprite->y_sprite_nbr);
+	sprite->x_current_sprite = x_nbr;
+	sprite->y_current_sprite = y_nbr;
+	sprite->drawing_start_coo = io_coordinates(x_nbr * sprite->sprite_width, y_nbr * sprite->sprite_height);
+	sprite->drawing_end_coo = io_coordinates((unsigned short) ((x_nbr + 1) * sprite->sprite_width), (unsigned short) ((y_nbr + 1) * sprite->sprite_height));
+    return sprite;
+}
+
+io_Sprite* io_spriteSheet_nextSprite(io_Sprite* sprite)
+{
+	sprite->x_current_sprite = (unsigned char) ((sprite->x_current_sprite + 1) % sprite->x_sprite_nbr);
+	sprite->drawing_start_coo = io_coordinates(sprite->x_current_sprite * sprite->sprite_width, sprite->y_current_sprite * sprite->sprite_height);
+	sprite->drawing_end_coo = io_coordinates((unsigned short) ((sprite->x_current_sprite + 1) * sprite->sprite_width),
+			(unsigned short) ((sprite->y_current_sprite + 1) * sprite->sprite_height));
+    return sprite;
+}
+
+io_Sprite* io_spriteSheet_nextSpriteVertical(io_Sprite* sprite)
+{
+	sprite->y_current_sprite = (unsigned char) ((sprite->y_current_sprite + 1) % sprite->y_sprite_nbr);
+	sprite->drawing_start_coo = io_coordinates(sprite->x_current_sprite * sprite->sprite_width, sprite->y_current_sprite * sprite->sprite_height);
+	sprite->drawing_end_coo = io_coordinates((unsigned short) ((sprite->x_current_sprite + 1) * sprite->sprite_width),
+			(unsigned short) ((sprite->y_current_sprite + 1) * sprite->sprite_height));
+    return sprite;
 }
 
 io_Sprite* io_setPosition(io_Sprite* sprite, io_Coordinates coord)
@@ -89,10 +136,15 @@ io_Sprite* io_setPosition(io_Sprite* sprite, io_Coordinates coord)
 
 io_Sprite* io_deleteSprite(io_Sprite* sprite)
 {
-	free(sprite->txt_color);
-	free(sprite->bg_color);
-	free(sprite);
-	return NULL;
+    free(sprite->txt_color);
+    free(sprite->bg_color);
+    free(sprite);
+    return NULL;
+}
+
+io_Sprite* io_deleteSpriteSheet(io_Sprite* sprite)
+{
+    return io_deleteSprite(sprite);
 }
 
 io_Sprite* io_printSpaces(io_Sprite* sprite, bool print_spaces)
@@ -124,21 +176,21 @@ io_Sprite* io_changeSpriteColor(io_Sprite* sprite, char* txt_color, char* bg_col
 
 io_Sprite* io_usePartOfSprite(io_Sprite* sprite, io_Coordinates drawing_beg, io_Coordinates drawing_end)
 {
-	if (drawing_beg.x <= sprite->x_size && drawing_beg.y <= sprite->y_size &&
+	assert(drawing_beg.x <= sprite->x_size && drawing_beg.y <= sprite->y_size &&
 		drawing_end.x <= sprite->x_size && drawing_end.y <= sprite->y_size &&
-		drawing_beg.x <= drawing_end.x && drawing_beg.y <= drawing_beg.y) {
+		drawing_beg.x <= drawing_end.x && drawing_beg.y <= drawing_beg.y);
 
-		sprite->drawing_start_coo = drawing_beg;
-		sprite->drawing_end_coo = drawing_end;
-		sprite->draw_part = true;
-	}
-
+	sprite->drawing_start_coo = drawing_beg;
+	sprite->drawing_end_coo = drawing_end;
+	sprite->draw_part = true;
 	return sprite;
 }
 
 io_Sprite* io_useAll(io_Sprite* sprite)
 {
 	sprite->draw_part = false;
+	sprite->drawing_start_coo = io_coordinates(0, 0);
+	sprite->drawing_end_coo = io_coordinates(sprite->x_size, sprite->y_size);
 	return sprite;
 }
 
@@ -149,6 +201,7 @@ io_Sprite* io_clearAndUsePart(io_Sprite* sprite, io_Coordinates drawing_beg, io_
 }
 
 io_Sprite* io_drawFilledRectangleIn(io_Sprite* sprite, io_Coordinates beg, io_Coordinates end, char draw_char){
+	assert(beg.x <= end.x && beg.y <= end.y && end.x < sprite->x_size && end.y < sprite->y_size);
 	unsigned short width = end.x - beg.x, height = end.y - beg.y;
 	unsigned short i;
 
@@ -159,18 +212,21 @@ io_Sprite* io_drawFilledRectangleIn(io_Sprite* sprite, io_Coordinates beg, io_Co
 }
 
 io_Sprite* io_drawRectangleIn(io_Sprite* sprite, io_Coordinates beg, io_Coordinates end, char draw_char){
+	assert(beg.x <= end.x && beg.y <= end.y && end.x < sprite->x_size && end.y < sprite->y_size);
 	io_drawVerticalLineIn(sprite, beg, end.y - beg.y, draw_char);
-	io_drawVerticalLineIn(sprite, io_setCoordinates(end.x, beg.y), end.y - beg.y, draw_char);
+	io_drawVerticalLineIn(sprite, io_coordinates(end.x, beg.y), end.y - beg.y, draw_char);
 	io_drawHorizontalLineIn(sprite, beg, end.x - beg.x, draw_char);
-	io_drawHorizontalLineIn(sprite, io_setCoordinates(beg.x, end.y), end.x - beg.x, draw_char);
+	io_drawHorizontalLineIn(sprite, io_coordinates(beg.x, end.y), end.x - beg.x, draw_char);
 	return sprite;
 }
 
 io_Sprite* io_drawLineIn(io_Sprite* sprite, io_Coordinates beg, io_Coordinates end, char draw_char){
 	if (end.x == beg.x) {
+		assert(beg.y < sprite->y_size && end.x < sprite->x_size && end.y < sprite->y_size);
 		io_drawVerticalLineIn(sprite, beg.y > end.y ? end : beg, (unsigned short) abs(end.y - beg.y), draw_char);
 	}
 	else if (end.y == beg.y) {
+		assert(beg.x < sprite->x_size && end.x < sprite->x_size && end.y < sprite->y_size);
 		io_drawHorizontalLineIn(sprite, beg.x > end.x ? end : beg, (unsigned short) abs(end.x - beg.x), draw_char);
 	}
 	else {
@@ -179,6 +235,7 @@ io_Sprite* io_drawLineIn(io_Sprite* sprite, io_Coordinates beg, io_Coordinates e
 			beg = end;
 			end = tmp;
 		}
+		assert(beg.y < sprite->y_size && end.x < sprite->x_size && end.y < sprite->y_size);
 		double i = 0, a = (double)(end.y - beg.y)/(double)(end.x - beg.x);
 		int j;
 
@@ -201,6 +258,8 @@ inline static void io_drawHorizontalLineIn(io_Sprite* sprite, io_Coordinates beg
 
 io_Sprite* io_drawCircleIn(io_Sprite* sprite, io_Coordinates center, unsigned short radius, char draw_char){
 	/* Andres' circle Algorithm */
+	assert(center.x + radius < sprite->x_size && center.y + radius < sprite->y_size &&
+		   center.x - radius > 0 && center.y - radius > 0);
 
 	int x = 0;
 	int y = radius;
@@ -244,20 +303,21 @@ io_Sprite* io_drawArchIn(io_Sprite* sprite, io_Coordinates center, io_Coordinate
 
 	radius = sqrt(pow(x1, 2) + pow(y1, 2));
 
-	if (fabs(radius - sqrt(pow(x2, 2) + pow(y2, 2))) < 0.00001) {
-		double angle1 = acos(x1 / (double)(radius)) + (M_PI * (y1 < 0));
-		double angle2 = acos(x2 / (double)(radius)) + (M_PI * (y2 < 0));
-		angle2+= 2 * M_PI * (angle1 > angle2);
+	// Checking if the both points are at the same distance from the center
+	assert(fabs(radius - sqrt(pow(x2, 2) + pow(y2, 2))) < 0.00001);
 
-		double stp = 2 * radius * (angle2 - angle1) + 1;
+	double angle1 = acos(x1 / (double)(radius)) + (M_PI * (y1 < 0));
+	double angle2 = acos(x2 / (double)(radius)) + (M_PI * (y2 < 0));
+	angle2+= 2 * M_PI * (angle1 > angle2);
 
-		double x, y, i;
-		for (i = angle1 ; i < angle2 ; i += (angle2 - angle1 + 1) / stp)
-		{
-			x = radius*cos(i);
-			y = radius*sin(i);
-			sprite->char_table[(int)(center.y + y)][(int)(center.x + x)] = draw_char;
-		}
+	double stp = 2 * radius * (angle2 - angle1) + 1;
+
+	double x, y, i;
+	for (i = angle1 ; i < angle2 ; i += (angle2 - angle1 + 1) / stp)
+	{
+		x = radius*cos(i);
+		y = radius*sin(i);
+		sprite->char_table[(int)(center.y + y)][(int)(center.x + x)] = draw_char;
 	}
 	return sprite;
 }

@@ -37,6 +37,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <assert.h>
+#include <math.h>
+#include <io/cursor.h>
+#include <io/console_management.h>
 
 
 /**
@@ -65,7 +69,7 @@ char io_getChar(void);
 /**
  * @brief Gets a char with timeout
  * @param timeout Time to wait in tenth of seconds.
- * @return        The char inputted by the user. 0 if no input
+ * @return        The char inputted by the user. -1 if no input
  */
 char io_getCharTimed(unsigned char timeout);
 

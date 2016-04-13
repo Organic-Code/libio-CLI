@@ -24,7 +24,7 @@
 
 
 COMPILER	= gcc
-COMPFLAGS	= -Wdisabled-optimization -Wstrict-prototypes -Wbad-function-cast -Winvalid-pch -Wdouble-promotion -Wformat -Wall -pedantic -pedantic-errors -Wunreachable-code -Winline -Wfloat-equal -Wundef -Wcast-align -Wredundant-decls -Winit-self -Wswitch-enum -fPIC -O3 -std=c99
+COMPFLAGS	= -Wdisabled-optimization -Wstrict-prototypes -Winvalid-pch -Wdouble-promotion -Wformat -Wall -pedantic -pedantic-errors -Wunreachable-code -Winline -Wfloat-equal -Wundef -Wcast-align -Wredundant-decls -Winit-self -Wswitch-enum -fPIC -O2 -std=gnu99
 DEBUGGER	= gdb
 LEAKCHECKER	= valgrind --leak-check=full --show-leak-kinds=all
 DISPLAY		= printf
@@ -42,7 +42,7 @@ INCLUDEDIR	= -I/usr/include -I. -Iinclude/
 LIBSDIR		= -L/usr/lib -L.
 LIBSOURCENAME	= console_management cursor geometry input  output sprite_display sprite_management coordinates
 LIBNAME		= libio
-EXAMPLESOURCE	= src/sample.c
+EXAMPLESOURCE	= src/sample/game.c src/sample/sample.c
 EXAMPLEBIN	= $(BUILDDIR)example.elf
 LINKS		= -lm
 

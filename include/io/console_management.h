@@ -43,6 +43,7 @@
 #include <termios.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
+#include <assert.h>
 
 /**
  * @brief Adds/Removes an attribute to the output text

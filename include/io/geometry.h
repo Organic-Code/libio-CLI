@@ -35,6 +35,7 @@
 
 #include <stdbool.h>
 #include <stdio.h>
+#include <assert.h>
 #include <io/coordinates_struct.h>
 #include <io/cursor.h>
 #include <math.h>

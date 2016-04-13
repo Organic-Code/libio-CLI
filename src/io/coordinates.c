@@ -25,7 +25,7 @@
 
 #include <io/coordinates_struct.h>
 
-io_Coordinates io_setCoordinates(unsigned short x, unsigned short y) {
+io_Coordinates io_coordinates(unsigned short x, unsigned short y) {
 	io_Coordinates a;
 	a.x = x;
 	a.y = y;

@@ -21,33 +21,31 @@
  * 3. This notice may not be removed or altered from any source distribution.                               *
  *                                                                                                          *
  ************************************************************************************************************/
- 
 
-#ifndef IO_COORDINATES_STRUCT_H_INCLUDED
-#define IO_COORDINATES_STRUCT_H_INCLUDED
 
-/**
- * @file io/coordinates_struct.h
- * @brief Introduces functions and structures associated to io_Coordinates.
- *
- * @author Lucas LAZARE
- */
+#ifndef IO_GAME_H_INCLUDED
+#define IO_GAME_H_INCLUDED
 
-/**
- * @struct io_Coordinates
- * @brief A structure defining a character's coordinates
- */
-typedef struct{
-	unsigned short x; /*!< Column of the character */
-	unsigned short y; /*!< Row of the character */
-}io_Coordinates;
+#include <stdbool.h>
+#include <time.h>
+#include <io/all.h>
+#include <unistd.h>
+#include <sys/timeb.h>
 
-/**
- * @brief Returns an io_Coordinates according to the inputed parameters
- * @param x Row
- * @param y Column
- * @return  The generated io_Coordinates
- */
-io_Coordinates io_coordinates(unsigned short x, unsigned short y);
+void startGame(void);
 
-#endif /* IO_COORDINATES_STRUCT_H_INCLUDED */
+void load(io_Sprite** hero, char ground[], char** accel);
+
+void unload(io_Sprite* hero, char* accel);
+
+char nextObstacle(char previous_ground[3]);
+
+void updatePositions(io_Sprite* hero, char* accel, char ground[]);
+
+bool jump(io_Sprite* hero, char* accel);
+
+void printGround(char ground[]);
+
+bool isAlive(io_Sprite* hero, char ground);
+
+#endif /* IO_GAME_H_INCLUDED */

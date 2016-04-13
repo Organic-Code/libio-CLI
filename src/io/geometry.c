@@ -26,13 +26,6 @@
 #include <io/geometry.h>
 
 /**
- * @brief computes the absolute value of a number
- * @param val Number
- * @return    The absolute value of val
- */
-inline static double io_abs(double val);
-
-/**
  * @brief Draws a vertical line
  * @param beg       Coordinate of an extremity of the line
  * @param height    Height of the line
@@ -49,6 +42,7 @@ inline static void io_drawVerticalLine(io_Coordinates beg, unsigned short height
 inline static void io_drawHorizontalLine(io_Coordinates beg, unsigned short width, char draw_char);
 
 void io_drawFilledRectangle(io_Coordinates beg, io_Coordinates end, char draw_char){
+	assert(beg.x <= end.x && beg.y <= end.y);
 	unsigned short width = end.x - beg.x, height = end.y - beg.y;
 	unsigned short i;
 
@@ -60,18 +54,19 @@ void io_drawFilledRectangle(io_Coordinates beg, io_Coordinates end, char draw_ch
 }
 
 void io_drawRectangle(io_Coordinates beg, io_Coordinates end, char draw_char){
+    assert(beg.x <= end.x && beg.y <= end.y);
 	io_drawVerticalLine(beg, end.y - beg.y, draw_char);
-	io_drawVerticalLine(io_setCoordinates(end.x, beg.y), end.y - beg.y, draw_char);
+	io_drawVerticalLine(io_coordinates(end.x, beg.y), end.y - beg.y, draw_char);
 	io_drawHorizontalLine(beg, end.x - beg.x, draw_char);
-	io_drawHorizontalLine(io_setCoordinates(beg.x, end.y), end.x - beg.x + 1, draw_char);
+	io_drawHorizontalLine(io_coordinates(beg.x, end.y), end.x - beg.x + 1, draw_char);
 }
 
 void io_drawLine(io_Coordinates beg, io_Coordinates end, char draw_char){
 	if (end.x == beg.x) {
-		io_drawVerticalLine(beg.y > end.y ? end : beg, io_abs(end.y - beg.y), draw_char);
+		io_drawVerticalLine(beg.y > end.y ? end : beg, fabs(end.y - beg.y), draw_char);
 	}
 	else if (end.y == beg.y) {
-		io_drawHorizontalLine(beg.x > end.x ? end : beg, io_abs(end.x - beg.x), draw_char);
+		io_drawHorizontalLine(beg.x > end.x ? end : beg, fabs(end.x - beg.x), draw_char);
 	}
 	else {
 		if (beg.x > end.x) {
@@ -83,8 +78,8 @@ void io_drawLine(io_Coordinates beg, io_Coordinates end, char draw_char){
 		double i = 0, a = ((double)(end.y - beg.y)/(double)(end.x - beg.x));
 		int j;
 
-		for (; i < io_abs(a) ; ++i) {
-			for(j = 0 ; j <= io_abs(end.x - beg.x) ; ++j) {
+		for (; i < fabs(a) ; ++i) {
+			for(j = 0 ; j <= fabs(end.x - beg.x) ; ++j) {
 				io_setCursorPos(j + beg.x, a * j + beg.y + i);
 				printf("%c", draw_char);
 			}
@@ -159,13 +154,13 @@ void io_drawArch(io_Coordinates center, io_Coordinates first_point_of_arch, io_C
 
 	radius = sqrt(pow(x1, 2) + pow(y1, 2));
 
-	if (io_abs(radius - sqrt(pow(x2, 2) + pow(y2, 2))) < 0.00001) {
+	if (fabs(radius - sqrt(pow(x2, 2) + pow(y2, 2))) < 0.00001) {
 		double stp;
 
 		double x, y, i;
 
-		angle1 = acos((double)(x1) / (double)(radius)) + (M_PI * (y1 < 0));
-		angle2 = acos((double)(x2) / (double)(radius)) + (M_PI * (y2 < 0));
+		angle1 = acos(x1 / (double)(radius)) + (M_PI * (y1 < 0));
+		angle2 = acos(x2 / (double)(radius)) + (M_PI * (y2 < 0));
 		angle2+= 2*M_PI*(angle1 > angle2);
 
 		stp = 2 * radius * (angle2 - angle1) + 1;
@@ -177,14 +172,5 @@ void io_drawArch(io_Coordinates center, io_Coordinates first_point_of_arch, io_C
 			io_setCursorPos((unsigned short)(center.x + x), (unsigned short)(center.y + y));
 			printf("%c", draw_char);
 		}
-	}
-}
-
-inline static double io_abs(double val){
-	if (val < 0) {
-		return -val;
-	}
-	else {
-		return val;
 	}
 }

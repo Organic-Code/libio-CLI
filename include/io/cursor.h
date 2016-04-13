@@ -52,4 +52,14 @@ void io_cursorHorizontalMove(int x);
  */
 void io_cursorVerticalMove(int y);
 
+/**
+ * @brief Saves the cursor position. Is supported by most terminals
+ */
+void io_saveCursorPosition(void);
+
+/**
+ * @brief Restores the cursor position. Is supported by most terminals
+ */
+void io_restoreCursorPosition(void);
+
 #endif /* IO_CURSOR_H_INCLUDED */
