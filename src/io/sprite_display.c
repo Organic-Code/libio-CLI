@@ -157,48 +157,96 @@ void io_clearSprite(const io_Sprite* sprite){
 }
 
 void io_moveSpriteTo(io_Sprite* sprite, io_Coordinates coordinates){
-	if (sprite->current_position.x <= coordinates.x && sprite->current_position.y <= coordinates.y && coordinates.x < sprite->current_position.x + sprite->drawing_end_coo.x - sprite->drawing_start_coo.x &&  coordinates.y < sprite->current_position.y + sprite->drawing_end_coo.y - sprite->drawing_start_coo.y){
+	if (sprite->current_position.x <= coordinates.x && sprite->current_position.y <= coordinates.y &&
+            coordinates.x < sprite->current_position.x + sprite->drawing_end_coo.x - sprite->drawing_start_coo.x &&
+            coordinates.y < sprite->current_position.y + sprite->drawing_end_coo.y - sprite->drawing_start_coo.y){
+
         unsigned short i, j, mini = minimum(sprite->current_position.x + sprite->drawing_end_coo.x - sprite->drawing_start_coo.x, coordinates.x);
-		for (j = sprite->current_position.y ; j < sprite->current_position.y + sprite->drawing_end_coo.y - sprite->drawing_start_coo.y ; ++j)
-			if (j < coordinates.y){
-				for (i = sprite->current_position.x ; i < sprite->current_position.x + sprite->drawing_end_coo.x - sprite->drawing_start_coo.x ; ++i){
-					if (sprite->char_table[j + sprite->drawing_start_coo.y - sprite->current_position.y][i + sprite->drawing_start_coo.x - sprite->current_position.x] != ' ')
-					{
-						io_setCursorPos(i, j);
-						printf(" ");
-					}
-				}
-			}
-			else{
-				for (i = sprite->current_position.x ; i < mini; ++i) {
-					if (sprite->char_table[j + sprite->drawing_start_coo.y - sprite->current_position.y][i + sprite->drawing_start_coo.x - sprite->current_position.x] != ' ') {
-						io_setCursorPos(i, j);
-						printf(" ");
-					}
-				}
-			}
-	}
-	else if (coordinates.x + sprite->drawing_end_coo.x - sprite->drawing_start_coo.x > sprite->current_position.x && coordinates.y + sprite->drawing_end_coo.y - sprite->drawing_start_coo.y > sprite->current_position.y && coordinates.x <= sprite->current_position.x && coordinates.y <= sprite->current_position.y)
-	{
-		unsigned int i, j;
-		for (j = sprite->current_position.y ; j < sprite->current_position.y + sprite->drawing_end_coo.y - sprite->drawing_start_coo.y ; ++j)
-            if (j > coordinates.y + sprite->drawing_end_coo.x - sprite->drawing_start_coo.y - 1){
-                for (i = sprite->current_position.x; i < sprite->current_position.x + sprite->drawing_end_coo.x - sprite->drawing_start_coo.x ; ++i){
-                    if (sprite->char_table[j + sprite->drawing_start_coo.y - sprite->current_position.y][i + sprite->drawing_start_coo.x - sprite->current_position.x]  != ' ')
-                    {
+
+		if (sprite->draw_spaces){
+            for (j = sprite->current_position.y ; j < sprite->current_position.y + sprite->drawing_end_coo.y - sprite->drawing_start_coo.y ; ++j) {
+                if (j < coordinates.y) {
+                    i = sprite->current_position.x;
+                    for (; i < sprite->current_position.x + sprite->drawing_end_coo.x - sprite->drawing_start_coo.x; ++i) {
+                        io_setCursorPos(i, j);
+                        printf(" ");
+                    }
+                }
+                else {
+                    for (i = sprite->current_position.x; i < mini; ++i) {
                         io_setCursorPos(i, j);
                         printf(" ");
                     }
                 }
             }
-            else {
-                for (i = coordinates.x + sprite->drawing_end_coo.x - sprite->drawing_start_coo.x - 1; i < sprite->current_position.x + sprite->drawing_end_coo.x - sprite->drawing_start_coo.x; ++i) {
+        }
+        else {
+            for (j = sprite->current_position.y ; j < sprite->current_position.y + sprite->drawing_end_coo.y - sprite->drawing_start_coo.y ; ++j) {
+                if (j < coordinates.y) {
+                    for (i = sprite->current_position.x;
+                         i < sprite->current_position.x + sprite->drawing_end_coo.x - sprite->drawing_start_coo.x; ++i) {
                         if (sprite->char_table[j + sprite->drawing_start_coo.y - sprite->current_position.y][i + sprite->drawing_start_coo.x - sprite->current_position.x] != ' ') {
                             io_setCursorPos(i, j);
                             printf(" ");
+                        }
+                    }
+                }
+                else {
+                    for (i = sprite->current_position.x; i < mini; ++i) {
+                        if (sprite->char_table[j + sprite->drawing_start_coo.y - sprite->current_position.y][i + sprite->drawing_start_coo.x - sprite->current_position.x] != ' ') {
+                            io_setCursorPos(i, j);
+                            printf(" ");
+                        }
                     }
                 }
             }
+        }
+	}
+	else if (coordinates.x + sprite->drawing_end_coo.x - sprite->drawing_start_coo.x > sprite->current_position.x &&
+            coordinates.y + sprite->drawing_end_coo.y - sprite->drawing_start_coo.y > sprite->current_position.y &&
+            coordinates.x <= sprite->current_position.x && coordinates.y <= sprite->current_position.y)
+	{
+		unsigned int i, j;
+        if (sprite->draw_spaces){
+            for (j = sprite->current_position.y ; j < sprite->current_position.y + sprite->drawing_end_coo.y - sprite->drawing_start_coo.y ; ++j) {
+                if (j > coordinates.y + sprite->drawing_end_coo.x - sprite->drawing_start_coo.y - 1) {
+                    i = sprite->current_position.x;
+                    for (; i < sprite->current_position.x + sprite->drawing_end_coo.x - sprite->drawing_start_coo.x; ++i) {
+                        io_setCursorPos(i, j);
+                        printf(" ");
+                    }
+                }
+                else {
+                    i = coordinates.x + sprite->drawing_end_coo.x - sprite->drawing_start_coo.x - 1;
+                    for (; i < sprite->current_position.x + sprite->drawing_end_coo.x - sprite->drawing_start_coo.x; ++i) {
+                        io_setCursorPos(i, j);
+                        printf(" ");
+                    }
+                }
+            }
+        }
+        else{
+            for (j = sprite->current_position.y ; j < sprite->current_position.y + sprite->drawing_end_coo.y - sprite->drawing_start_coo.y ; ++j) {
+                if (j > coordinates.y + sprite->drawing_end_coo.x - sprite->drawing_start_coo.y - 1) {
+                    i = sprite->current_position.x;
+                    for (; i < sprite->current_position.x + sprite->drawing_end_coo.x - sprite->drawing_start_coo.x; ++i) {
+                        if (sprite->char_table[j + sprite->drawing_start_coo.y - sprite->current_position.y][i + sprite->drawing_start_coo.x - sprite->current_position.x] != ' ') {
+                            io_setCursorPos(i, j);
+                            printf(" ");
+                        }
+                    }
+                }
+                else {
+                    i = coordinates.x + sprite->drawing_end_coo.x - sprite->drawing_start_coo.x - 1;
+                    for (; i < sprite->current_position.x + sprite->drawing_end_coo.x - sprite->drawing_start_coo.x; ++i) {
+                        if (sprite->char_table[j + sprite->drawing_start_coo.y - sprite->current_position.y][i + sprite->drawing_start_coo.x - sprite->current_position.x] != ' ') {
+                            io_setCursorPos(i, j);
+                            printf(" ");
+                        }
+                    }
+                }
+            }
+        }
 	}
 	else {
 		io_clearSprite(sprite);
