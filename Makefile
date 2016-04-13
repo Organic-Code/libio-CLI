@@ -24,7 +24,7 @@
 
 
 COMPILER	= gcc
-COMPFLAGS	= -Wdisabled-optimization -Wstrict-prototypes -Winvalid-pch -Wdouble-promotion -Wformat -Wall -pedantic -pedantic-errors -Wunreachable-code -Winline -Wfloat-equal -Wundef -Wcast-align -Wredundant-decls -Winit-self -Wswitch-enum -fPIC -O2 -std=gnu99
+COMPFLAGS	= -Wdisabled-optimization -Wstrict-prototypes -Winvalid-pch -Wdouble-promotion -Wformat -Wall -pedantic -pedantic-errors -Wunreachable-code -Winline -Wfloat-equal -Wundef -Wcast-align -Wredundant-decls -Winit-self -Wswitch-enum -fPIC -O2 -std=gnu99 -D NDEBUG
 DEBUGGER	= gdb
 LEAKCHECKER	= valgrind --leak-check=full --show-leak-kinds=all
 DISPLAY		= printf
