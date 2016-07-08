@@ -52,16 +52,39 @@
 void io_setTextAttributes(const char* attribute);
 
 /**
+ * @param attribute The attribute you want info for
+ * @return          The char* that should be print to the standard output for an attribute change
+ */
+const char* io_getTextAttributesString(const char* attribute);
+
+/**
  * @brief Sets a background color for the output text
  * @param color Color choosen as a background color, without any capital letter.
  */
 void io_setBgColor(const char* color);
 
 /**
+ * @param color The color you want info for
+ * @return      The char* that should be print to the standard output for an bg color change
+ */
+const char* io_getBgColorString(const char* color);
+
+/**
  * @brief Sets a font color for the output text
  * @param color Color choosen as a font color, without any capital letter.
  */
 void io_setTextColor(const char* color);
+
+/**
+ * @param color The color you want info for
+ * @return      The char* that should be print to the standard output for an fg color change
+ */
+const char* io_getTextColorString(const char* color);
+
+/**
+ * @param attribute the attribute you want info for
+ * @return the char* that should be print to the standard output for an attribute change
+ */
 
 /**
  * @brief Sets the cursor visibility

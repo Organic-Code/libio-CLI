@@ -24,6 +24,7 @@
  ***********************************************************************/
 
 #include <io/sprite_display.h>
+#include <io/sprite_struct.h>
 
 static unsigned short minimum(unsigned short a, unsigned short b);
 

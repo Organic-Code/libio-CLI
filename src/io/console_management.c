@@ -31,86 +31,108 @@ static bool io_cursor_visible = true;
 static bool io_echo_setting = true;
 
 void io_setTextAttributes(const char* attribute)
+{	if (!strcmp(attribute, "reset")) {
+		printf("\033[0m");
+		io_current_bg_color[0] = '\0';
+		io_current_txt_color[0] = '\0';
+	} else {
+		printf("%s", io_getTextAttributesString(attribute));
+	}
+	fflush(stdout);
+}
+
+const char* io_getTextAttributesString(const char* attribute)
 {
 	assert(attribute != NULL);
 	switch (attribute[0])
 	{
 		case '+':
 			++attribute;
-			if (!strcmp(attribute, "bold"))               printf("\033[1m");/*break*/
-			else if (!strcmp(attribute, "dim"))           printf("\033[2m");/*break*/
-			else if (!strcmp(attribute, "underline"))     printf("\033[4m");/*break*/
-			else if (!strcmp(attribute, "blink"))         printf("\033[5m");/*break*/
-			else if (!strcmp(attribute, "invert"))        printf("\033[7m");/*break*/
-			else if (!strcmp(attribute, "strike"))        printf("\033[8m");/*break*/
+			if (!strcmp(attribute, "bold"))               return "\033[1m";
+			else if (!strcmp(attribute, "dim"))           return "\033[2m";
+			else if (!strcmp(attribute, "underline"))     return "\033[4m";
+			else if (!strcmp(attribute, "blink"))         return "\033[5m";
+			else if (!strcmp(attribute, "invert"))        return "\033[7m";
+			else if (!strcmp(attribute, "strike"))        return "\033[8m";
 			break;
 		case '-':
 			++attribute;
-			if (!strcmp(attribute, "bold"))               printf("\033[21m");/*break*/
-			else if (!strcmp(attribute, "dim"))           printf("\033[22m");/*break*/
-			else if (!strcmp(attribute, "underline"))     printf("\033[24m");/*break*/
-			else if (!strcmp(attribute, "blink"))         printf("\033[25m");/*break*/
-			else if (!strcmp(attribute, "invert"))        printf("\033[27m");/*break*/
-			else if (!strcmp(attribute, "strike"))        printf("\033[29m");/*break*/
+			if (!strcmp(attribute, "bold"))               return "\033[21m";
+			else if (!strcmp(attribute, "dim"))           return "\033[22m";
+			else if (!strcmp(attribute, "underline"))     return "\033[24m";
+			else if (!strcmp(attribute, "blink"))         return "\033[25m";
+			else if (!strcmp(attribute, "invert"))        return "\033[27m";
+			else if (!strcmp(attribute, "strike"))        return "\033[29m";
 			break;
 		default:
 			if (!strcmp(attribute, "reset")) {
-				printf("\033[0m");
-				io_current_bg_color[0] = '\0';
-				io_current_txt_color[0] = '\0';
+				return "\033[0m";
 			}
 			break;
 	}
-	fflush(stdout);
+	return "";
 }
+
 void io_setBgColor(const char* color)
 {
-	assert(color != NULL);
-	if (!strcmp(color, "black"))                                  printf("\033[40m");/*break*/
-	else if (!strcmp(color, "red"))                               printf("\033[41m");/*break*/
-	else if (!strcmp(color, "green"))                             printf("\033[42m");/*break*/
-	else if (!strcmp(color, "yellow"))                            printf("\033[43m");/*break*/
-	else if (!strcmp(color, "blue"))                              printf("\033[44m");/*break*/
-	else if (!strcmp(color, "magenta"))                           printf("\033[45m");/*break*/
-	else if (!strcmp(color, "cyan"))                              printf("\033[46m");/*break*/
-	else if (!strcmp(color, "light grey"))                        printf("\033[47m");/*break*/
-	else if (!strcmp(color, "grey"))                              printf("\033[100m");/*break*/
-	else if (!strcmp(color, "light red"))                         printf("\033[101m");/*break*/
-	else if (!strcmp(color, "light green"))                       printf("\033[102m");/*break*/
-	else if (!strcmp(color, "light yellow"))                      printf("\033[103m");/*break*/
-	else if (!strcmp(color, "light blue"))                        printf("\033[104m");/*break*/
-	else if (!strcmp(color, "light magenta"))                     printf("\033[105m");/*break*/
-	else if (!strcmp(color, "light cyan"))                        printf("\033[106m");/*break*/
-	else if (!strcmp(color, "white"))                             printf("\033[107m");/*break*/
+	printf("%s", io_getBgColorString(color));
 	fflush(stdout);
 
 	assert(strlen(color) < 14);
 	strcpy(io_current_bg_color, color);
 }
 
-void io_setTextColor(const char* color)
+const char* io_getBgColorString(const char* color)
 {
 	assert(color != NULL);
-	if (!strcmp(color, "black"))                                  printf("\033[8m"); /*break*/
-	else if (!strcmp(color, "grey"))                              printf("\033[30m");/*break*/
-	else if (!strcmp(color, "red"))                               printf("\033[31m");/*break*/
-	else if (!strcmp(color, "green"))                             printf("\033[32m");/*break*/
-	else if (!strcmp(color, "yellow"))                            printf("\033[33m");/*break*/
-	else if (!strcmp(color, "blue"))                              printf("\033[34m");/*break*/
-	else if (!strcmp(color, "magenta"))                           printf("\033[35m");/*break*/
-	else if (!strcmp(color, "cyan"))                              printf("\033[36m");/*break*/
-	else if (!strcmp(color, "light grey"))                        printf("\033[37m");/*break*/
-	else if (!strcmp(color, "light red"))                         printf("\033[91m");/*break*/
-	else if (!strcmp(color, "light green"))                       printf("\033[92m");/*break*/
-	else if (!strcmp(color, "light yellow"))                      printf("\033[93m");/*break*/
-	else if (!strcmp(color, "light blue"))                        printf("\033[94m");/*break*/
-	else if (!strcmp(color, "light magenta"))                     printf("\033[95m");/*break*/
-	else if (!strcmp(color, "light cyan"))                        printf("\033[96m");/*break*/
-	else if (!strcmp(color, "white"))                             printf("\033[97m");/*break*/
+	if (!strcmp(color, "black"))                                  return "\033[40m";
+	else if (!strcmp(color, "red"))                               return "\033[41m";
+	else if (!strcmp(color, "green"))                             return "\033[42m";
+	else if (!strcmp(color, "yellow"))                            return "\033[43m";
+	else if (!strcmp(color, "blue"))                              return "\033[44m";
+	else if (!strcmp(color, "magenta"))                           return "\033[45m";
+	else if (!strcmp(color, "cyan"))                              return "\033[46m";
+	else if (!strcmp(color, "light grey"))                        return "\033[47m";
+	else if (!strcmp(color, "grey"))                              return "\033[100m";
+	else if (!strcmp(color, "light red"))                         return "\033[101m";
+	else if (!strcmp(color, "light green"))                       return "\033[102m";
+	else if (!strcmp(color, "light yellow"))                      return "\033[103m";
+	else if (!strcmp(color, "light blue"))                        return "\033[104m";
+	else if (!strcmp(color, "light magenta"))                     return "\033[105m";
+	else if (!strcmp(color, "light cyan"))                        return "\033[106m";
+	else if (!strcmp(color, "white"))                             return "\033[107m";
+	return "";
+}
+
+void io_setTextColor(const char* color)
+{
+	printf("%s", io_getTextColorString(color));
 	fflush(stdout);
 
 	assert(strlen(color) < 14);
 	strcpy(io_current_txt_color, color);
+}
+
+const char* io_getTextColorString(const char* color)
+{
+	assert(color != NULL);
+	if (!strcmp(color, "black"))                                  return"\033[8m";
+	else if (!strcmp(color, "grey"))                              return"\033[30m";
+	else if (!strcmp(color, "red"))                               return"\033[31m";
+	else if (!strcmp(color, "green"))                             return"\033[32m";
+	else if (!strcmp(color, "yellow"))                            return"\033[33m";
+	else if (!strcmp(color, "blue"))                              return"\033[34m";
+	else if (!strcmp(color, "magenta"))                           return"\033[35m";
+	else if (!strcmp(color, "cyan"))                              return"\033[36m";
+	else if (!strcmp(color, "light grey"))                        return"\033[37m";
+	else if (!strcmp(color, "light red"))                         return"\033[91m";
+	else if (!strcmp(color, "light green"))                       return"\033[92m";
+	else if (!strcmp(color, "light yellow"))                      return"\033[93m";
+	else if (!strcmp(color, "light blue"))                        return"\033[94m";
+	else if (!strcmp(color, "light magenta"))                     return"\033[95m";
+	else if (!strcmp(color, "light cyan"))                        return"\033[96m";
+	else if (!strcmp(color, "white"))                             return"\033[97m";
+	return "";
 }
 
 void io_visibleCursor(bool visible)
